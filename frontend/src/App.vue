@@ -8,11 +8,14 @@ import HelloWorld from './components/HelloWorld.vue'
     <header>
       <nav>
           <div class="logotemp">
-            <img alt="Logo" class="logo" src="@/assets/logotemp.png" width="181" height="52" />
+            <img alt="Logo" class="logo" src="@/assets/logotemp.png" width="190" height="50" />
           </div>
           <div class="routerlinks">
             <RouterLink to="/">Home</RouterLink>
-            <RouterLink to="/about">About</RouterLink>
+            <RouterLink to="/quote">Free Quote</RouterLink>
+            <RouterLink to="/services">Services</RouterLink>
+            <RouterLink to="/about">Gallery</RouterLink>
+
           </div>
       </nav>
     </header>
@@ -34,7 +37,7 @@ header {
   height: 80px;
   width: 100%;     
   z-index: 1000;
-  background: black; /* temp color */
+  background: #111111; /* temp color */
 }
 
 main {
@@ -51,6 +54,8 @@ main {
   position: fixed;
   right: 0;
   margin-right: 5%;
+  font-family: 'Kulim Park';
+  font-style: normal;
 }
 .logotemp{
   position: fixed;
