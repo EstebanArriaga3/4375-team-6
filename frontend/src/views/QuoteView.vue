@@ -37,6 +37,14 @@
         ></textarea>
       </div>
 
+      <div class="description-section">
+        <label for="contact">Email Address:</label>
+        <textarea
+          id="email"
+          rows="1"
+        ></textarea>
+      </div>
+
       <div class="submit-section">
         <button type="submit" class="btn-submit">Submit</button>
       </div>
