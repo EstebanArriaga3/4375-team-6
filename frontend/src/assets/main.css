@@ -1,35 +1,132 @@
 @import './base.css';
 
+:root {
+  --header-height: 80px;
+}
+
 #app {
-  max-width: 1280px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+header {
+  width: 100%;
+  height: var(--header-height);
+  padding: 0 2rem;
+  background-color: var(--color-background-soft);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+header img {
+  height: 40px;
+}
+
+header nav {
+  display: flex;
+  gap: 1rem;
+}
+
+header nav a {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--color-text);
+  transition: color 0.3s ease;
+}
+
+header nav a:hover {
+  color: var(--color-primary);
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: calc(var(--header-height) + 2rem) 2rem 2rem;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
+  width: 100%;
 }
 
-a,
-.green {
-  text-decoration: none;
-  color: #4198FF;
-  transition: 0.4s;
-  padding: 3px;
+footer {
+  background-color: var(--color-background-mute);
+  color: var(--color-text);
+  text-align: center;
+  padding: 1rem;
+  width: 100%;
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
+footer a {
+  margin: 0 10px;
+  color: var(--color-primary);
+  transition: color 0.3s ease;
+}
+
+footer a:hover {
+  color: var(--color-primary-light);
+}
+
+.grid {
+  display: grid;
+  gap: 2rem;
+  width: 100%;
+  margin-top: 2rem;
+}
+
+.grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.grid-item {
+  background-color: var(--color-background-soft);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.grid-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+  header {
+    padding: 0 1rem;
+  }
+
+  header nav {
+    display: none;
+  }
+
+  main {
+    padding: calc(var(--header-height) + 1rem) 1rem 1rem;
   }
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: #111111;
+    --color-background-soft: #1e1e1e;
+    --color-background-mute: #242424;
+    --color-text: #e6e6e6;
+    --color-primary: #48bb78;
+    --color-primary-light: #68d391;
   }
 
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
+  .grid-item {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   }
 }

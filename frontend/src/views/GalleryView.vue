@@ -1,5 +1,6 @@
 <template>
-    <div class="categories-wrapper">
+  <div class="gallery-wrapper">
+    <h2 class="gallery-heading">Explore Our Work</h2>
     <div class="categories">
       <div
         class="category-box"
@@ -7,14 +8,14 @@
         :key="index"
         @click="openCarousel(index)"
       >
-        {{ category.label }}
+        <img :src="category.thumbnail" :alt="category.label" class="category-thumbnail" />
+        <div class="category-label">{{ category.label }}</div>
       </div>
     </div>
 
     <div v-if="showCarousel" class="carousel-modal">
       <div class="carousel">
-        <!-- Move close button here -->
-        <button class="close-btn" @click="closeCarousel">X</button>
+        <button class="close-btn" @click="closeCarousel">✖</button>
         <div class="carousel-wrapper">
           <div
             v-for="(image, imgIndex) in categories[currentCategoryIndex].images"
@@ -40,7 +41,7 @@
       </div>
     </div>
   </div>
-  </template>
+</template>
 
 <script>
 export default {
@@ -52,40 +53,45 @@ export default {
       categories: [
         {
           label: "Lawns",
+          thumbnail: "/images/lawn_thumb.jpg",
           images: [
-            { src: "/images/lawn1.jpg", alt: "/images/lawn1.jpg" },
-            { src: "/images/lawn2.jpg", alt: "/images/lawn2.jpg" },
-            { src: "/images/lawn3.jpg", alt: "/images/lawn3.jpg" },
+            { src: "/images/lawn1.jpg", alt: "Lawn 1" },
+            { src: "/images/lawn2.jpg", alt: "Lawn 2" },
+            { src: "/images/lawn3.jpg", alt: "Lawn 3" },
           ],
         },
         {
           label: "Landscaping",
+          thumbnail: "/images/landscaping_thumb.jpg",
           images: [
-            { src: "/images/landscaping1.jpg", alt: "/images/landscaping1.jpg" },
-            { src: "/images/landscaping2.jpg", alt: "/images/landscaping2.jpg" },
-            { src: "/images/landscaping3.jpg", alt: "/images/landscaping3.jpg" },
+            { src: "/images/landscaping1.jpg", alt: "Landscaping 1" },
+            { src: "/images/landscaping2.jpg", alt: "Landscaping 2" },
+            { src: "/images/landscaping3.jpg", alt: "Landscaping 3" },
           ],
         },
         {
           label: "Fences & Gates",
+          thumbnail: "/images/fences_thumb.jpg",
           images: [
-            { src: "/images/fence&gate1.jpg", alt: "/images/fence&gate1.jpg" },
-            { src: "/images/fence&gate2.jpg", alt: "/images/fence&gate2.jpg" },
-            { src: "/images/fence&gate3.jpg", alt: "/images/fence&gate3.jpg" },
+            { src: "/images/fence1.jpg", alt: "Fence 1" },
+            { src: "/images/fence2.jpg", alt: "Fence 2" },
+            { src: "/images/fence3.jpg", alt: "Fence 3" },
           ],
         },
         {
           label: "Raised Beds",
+          thumbnail: "/images/raised_bed_thumb.jpg",
           images: [
-            { src: "/images/raised_bed1.jpg", alt: "/images/raised_bed1.jpg" },
-            { src: "/images/raised_bed2.jpg", alt: "/images/raised_bed2.jpg" },
-            { src: "/images/raised_bed3.jpg", alt: "/images/raised_bed3.jpg" },
+            { src: "/images/raised_bed1.jpg", alt: "Raised Bed 1" },
+            { src: "/images/raised_bed2.jpg", alt: "Raised Bed 2" },
+            { src: "/images/raised_bed3.jpg", alt: "Raised Bed 3" },
           ],
         },
         {
           label: "Roof & Gutters",
+          thumbnail: "/images/roof_gutter_thumb.jpg",
           images: [
-          { src: "/images/roof&gutters1.jpg", alt: "/images/roof&gutters1.jpg" },
+            { src: "/images/roof_gutter1.jpg", alt: "Roof & Gutter 1" },
           ],
         },
       ],
@@ -114,115 +120,123 @@ export default {
   },
 };
 </script>
-  
-  <style scoped>
-  @media (min-width: 1024px) {
-    .about {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-    }
-  }
 
-  .categories-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
+<style scoped>
+.gallery-wrapper {
+  padding: 2rem;
+  text-align: center;
+}
+
+.gallery-heading {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  color: #333;
 }
 
 .categories {
   display: flex;
-  justify-content: center; /* Center content within the container */
-  gap: 20px; /* Spacing between boxes */
-  margin-top: 0px; /* Space from the top */
-  margin-left: 10px;
-  padding: 1px;
-  
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
 }
 
 .category-box {
-  width: 225px; /* Set a fixed width for the boxes */
-  height: 250px; /* Set a fixed height for the boxes */
-  display: flex;
-  justify-content: center; /* Center content inside the box */
-  align-items: center; /* Center content inside the box */
-  background-color: #ccc;
+  position: relative;
+  width: 300px;
+  height: 200px;
+  border-radius: 15px;
+  overflow: hidden;
   cursor: pointer;
-  text-align: center;
-  padding: 10px;
-  font-weight: bold;
-  border-radius: 10px;
-  flex-shrink: 0; /* Prevent boxes from shrinking */
-  font-family: 'Copperplate', serif; /* Set font to Copperplate */
-  font-size: large;
-  color: red; /* Change text color to red */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Exit button (close carousel) in the top-right corner */
-.close-btn {
+.category-box:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.category-thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.category-label {
   position: absolute;
-  bottom: 10px; /* Position at the bottom */
-  right: 10px; /* Position at the right */
-  background-color: rgba(255, 255, 255, 0.8);
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  color: black;
-  padding: 5px 10px;
-  border-radius: 50%;
-  z-index: 3; /* Ensure it appears on top of all content */
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
 }
 
 .carousel-modal {
   position: fixed;
-  top: 60px; /* Adjust this value based on your actual header height */
+  top: 0;
   left: 0;
   width: 100%;
-  height: calc(100% - 60px); /* Make sure the modal covers the rest of the screen, accounting for the header */
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 2; /* Ensure the modal is behind the header if the header is fixed or sticky */
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
 }
 
 .carousel {
-  background-color: #fff;
-  padding: 20px;
   position: relative;
   width: 80%;
-  max-width: 800px;
-  margin: auto; /* Center carousel */
+  max-width: 900px;
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
 }
 
 .carousel-wrapper {
   display: flex;
   transition: transform 0.5s ease-in-out;
-  width: 100%; /* Ensure the wrapper takes up full width */
-  justify-content: center; /* Center the content inside */
+  width: 100%;
+  justify-content: center;
 }
 
 .carousel-item {
-  min-width: 100%;
-  display: none; /* Initially hide all items */
-  justify-content: center; /* Center the image inside the item */
+  display: none;
+  justify-content: center;
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
 }
 
 .carousel-item.active {
-  display: flex; /* Show the active item */
+  display: block;
   opacity: 1;
 }
 
 .carousel img {
   width: 100%;
   height: auto;
-  object-fit: contain; /* Ensure the image fits within the container */
+  border-radius: 10px;
+  object-fit: contain;
 }
 
-/* Adjusting previous and next button positions to avoid covering the image */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 50%;
+  z-index: 10;
+}
+
 .carousel-controls {
   display: flex;
   justify-content: space-between;
@@ -230,30 +244,20 @@ export default {
   width: 100%;
   top: 50%;
   left: 0;
-  right: 0;
   transform: translateY(-50%);
-  pointer-events: none; /* Prevent buttons from interfering with images */
+  pointer-events: none;
 }
 
-.prev-btn, .next-btn {
+.prev-btn,
+.next-btn {
   background-color: rgba(0, 0, 0, 0.5);
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 10px;
   cursor: pointer;
-  font-size: 24px;
-  pointer-events: all; /* Enable clicks only on buttons */
+  font-size: 1.5rem;
+  pointer-events: all;
   z-index: 1;
-}
-
-.prev-btn {
-  left: -60px;
-  position: relative;
-}
-
-.next-btn {
-  right: -60px;
-  position: relative;
 }
 
 .carousel-indicators {
@@ -263,8 +267,8 @@ export default {
 }
 
 .carousel-indicators span {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   margin: 0 5px;
   background-color: rgba(0, 0, 0, 0.3);
   border-radius: 50%;
@@ -274,4 +278,4 @@ export default {
 .carousel-indicators span.active {
   background-color: rgba(0, 0, 0, 1);
 }
-  </style>
+</style>
