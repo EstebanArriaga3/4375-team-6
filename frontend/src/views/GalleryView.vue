@@ -142,7 +142,7 @@ export default {
 }
 
 .category-box {
-  width: 250px; /* Set a fixed width for the boxes */
+  width: 225px; /* Set a fixed width for the boxes */
   height: 250px; /* Set a fixed height for the boxes */
   display: flex;
   justify-content: center; /* Center content inside the box */
@@ -150,7 +150,7 @@ export default {
   background-color: #ccc;
   cursor: pointer;
   text-align: center;
-  padding: 20px;
+  padding: 10px;
   font-weight: bold;
   border-radius: 10px;
   flex-shrink: 0; /* Prevent boxes from shrinking */
