@@ -21,7 +21,7 @@ header {
   position: fixed;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 header img {
@@ -49,6 +49,7 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
   padding: calc(var(--header-height) + 2rem) 2rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
@@ -61,10 +62,7 @@ footer {
   text-align: center;
   padding: 1rem;
   width: 100%;
-  margin-top: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  margin-top: auto; /* Keeps footer anchored at the bottom */
 }
 
 footer a {
@@ -91,15 +89,15 @@ footer a:hover {
 .grid-item {
   background-color: var(--color-background-soft);
   padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
   text-align: center;
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .grid-item:hover {
   transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
 }
 
 @media (max-width: 768px) {
@@ -117,16 +115,7 @@ footer a:hover {
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: #111111;
-    --color-background-soft: #1e1e1e;
-    --color-background-mute: #242424;
-    --color-text: #e6e6e6;
-    --color-primary: #48bb78;
-    --color-primary-light: #68d391;
-  }
-
   .grid-item {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
   }
 }

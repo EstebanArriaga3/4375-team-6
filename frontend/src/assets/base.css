@@ -1,16 +1,16 @@
 :root {
-  --color-background: #111111; /* Slightly darker for a modern look */
-  --color-background-soft: #1e1e1e; /* Darker soft background */
-  --color-background-mute: #242424; /* Muted background */
+  --color-background: #121212; /* Sleek dark background */
+  --color-background-soft: #1e1e1e; /* Dark soft background for contrast */
+  --color-background-mute: #292929; /* Muted background for cards and emphasis */
 
   --color-text: #e6e6e6; /* Light text for contrast against dark background */
-  --color-text-soft: #cccccc; /* Muted light text */
-  --color-text-mute: #999999; /* Even more muted text color */
+  --color-text-soft: #c0c0c0; /* Slightly muted text color */
+  --color-text-mute: #9e9e9e; /* Even more muted text color */
 
-  --color-primary: #48bb78; /* Green - vibrant for accent */
-  --color-primary-light: #68d391; /* Lightened primary color for hover states */
-  --color-secondary: #4299e1; /* Blue - secondary accent color */
-  --color-secondary-light: #63b3ed; /* Lighter version for hover states */
+  --color-primary: #4CAF50; /* Vivid green primary color for branding */
+  --color-primary-light: #81C784; /* Lightened primary color for hover states */
+  --color-secondary: #2979ff; /* Bright blue for secondary actions */
+  --color-secondary-light: #5393ff; /* Lighter blue for hover states */
 
   --section-gap: 160px;
 }
@@ -21,18 +21,22 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-weight: normal;
 }
 
 body {
   min-height: 100vh;
   color: var(--color-text);
   background: var(--color-background);
+  transition: color 0.5s, background-color 0.5s;
   line-height: 1.6;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Poppins', sans-serif; /* Clean and modern font */
   font-size: 16px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  flex-direction: column;
 }
 
 a {
@@ -74,13 +78,17 @@ img {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-background: #111111;
+    --color-background: #121212;
     --color-background-soft: #1e1e1e;
-    --color-background-mute: #242424;
+    --color-background-mute: #292929;
 
     --color-text: #e6e6e6;
-    --color-primary: #48bb78;
-    --color-primary-light: #68d391;
+    --color-text-soft: #c0c0c0;
+    --color-text-mute: #9e9e9e;
+
+    --color-primary: #4CAF50;
+    --color-primary-light: #81C784;
+    --color-secondary: #2979ff;
+    --color-secondary-light: #5393ff;
   }
 }
-
