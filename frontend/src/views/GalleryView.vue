@@ -53,7 +53,7 @@ export default {
       categories: [
         {
           label: "Lawns",
-          thumbnail: "/images/lawn_thumb.jpg",
+          thumbnail: "/images/thumbnail/lawn_thumb.jpg",
           images: [
             { src: "/images/lawn1.jpg", alt: "Lawn 1" },
             { src: "/images/lawn2.jpg", alt: "Lawn 2" },
@@ -62,7 +62,7 @@ export default {
         },
         {
           label: "Landscaping",
-          thumbnail: "/images/landscaping_thumb.jpg",
+          thumbnail: "/images/thumbnail/landscaping_thumb.jpg",
           images: [
             { src: "/images/landscaping1.jpg", alt: "Landscaping 1" },
             { src: "/images/landscaping2.jpg", alt: "Landscaping 2" },
@@ -71,7 +71,7 @@ export default {
         },
         {
           label: "Fences & Gates",
-          thumbnail: "/images/fences_thumb.jpg",
+          thumbnail: "/images/thumbnail/fences_thumb.jpg",
           images: [
             { src: "/images/fence1.jpg", alt: "Fence 1" },
             { src: "/images/fence2.jpg", alt: "Fence 2" },
@@ -80,7 +80,7 @@ export default {
         },
         {
           label: "Raised Beds",
-          thumbnail: "/images/raised_bed_thumb.jpg",
+          thumbnail: "/images/thumbnail/raised_bed_thumb.jpg",
           images: [
             { src: "/images/raised_bed1.jpg", alt: "Raised Bed 1" },
             { src: "/images/raised_bed2.jpg", alt: "Raised Bed 2" },
@@ -89,9 +89,9 @@ export default {
         },
         {
           label: "Roof & Gutters",
-          thumbnail: "/images/roof_gutter_thumb.jpg",
+          thumbnail: "/images/thumbnail/roof_gutter_thumb.jpg",
           images: [
-            { src: "/images/roof_gutter1.jpg", alt: "Roof & Gutter 1" },
+            { src: "/images/roof_gutters1.jpg", alt: "Roof & Gutter 1" },
           ],
         },
       ],
