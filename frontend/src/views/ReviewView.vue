@@ -25,7 +25,7 @@
         <div class="leave-review">
             <h2>Leave Your Review</h2>
             <input type="text" v-model="newReview.name" placeholder="Your Name" />
-            <textarea v-model="newReview.text" placeholder="Your Review"></textarea>
+            <textarea v-model="newReview.text" placeholder="Your Review" rows = '5'></textarea>
             <select v-model="newReview.rating">
                 <option disabled value="">Rating</option>
                 <option value="5">5 - Excellent</option>
@@ -73,29 +73,36 @@ export default {
 /* Main Container */
 .reviews-page {
     padding: 40px 20px;
-    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Poppins', sans-serif;
     background-color: #181818;
     color: #f0f0f0;
     text-align: center;
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Animation for fade-in effect */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 /* Title */
 h1 {
-    font-size: 2.8rem;
+    font-size: 3rem;
     margin-bottom: 20px;
-    color: #ffffff;
+    color: #fff;
     text-transform: uppercase;
     letter-spacing: 2px;
     font-weight: 700;
-    border-bottom: 2px solid #444;
+    border-bottom: 3px solid #444;
     padding-bottom: 10px;
 }
 
 /* Description */
 .description {
     font-size: 1.2rem;
-    color: #999;
-    margin-bottom: 60px;
+    color: #bbb;
+    margin-bottom: 50px;
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
@@ -105,21 +112,23 @@ h1 {
 /* Reviews Section */
 .reviews-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 30px;
 }
 
 .review {
     background-color: #222;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    text-align: left;
 }
 
 .review:hover {
     transform: translateY(-10px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.9);
 }
 
 .review-header {
@@ -130,9 +139,9 @@ h1 {
 }
 
 h2 {
-    font-size: 1.4rem;
-    color: #ffffff;
-    font-weight: 600;
+    font-size: 1.6rem;
+    color: #fff;
+    font-weight: 700;
 }
 
 .rating {
@@ -146,16 +155,16 @@ h2 {
     color: #ccc;
     font-size: 1rem;
     line-height: 1.6;
+    font-style: italic;
 }
 
 /* Leave a Review Section */
 .leave-review {
     margin-top: 60px;
     padding: 30px;
-    background-color: #222;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    text-align: left;
+    background-color: #333;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
@@ -164,7 +173,7 @@ h2 {
 .leave-review h2 {
     font-size: 1.8rem;
     margin-bottom: 20px;
-    color: #ffffff;
+    color: #fff;
 }
 
 .leave-review input,
@@ -176,9 +185,9 @@ h2 {
     border: 1px solid #555;
     border-radius: 5px;
     font-size: 1rem;
-    background-color: #333;
+    background-color: #444;
     color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
 }
 
 .leave-review input::placeholder,
@@ -215,7 +224,7 @@ h2 {
     }
 
     h1 {
-        font-size: 2.2rem;
+        font-size: 2.5rem;
     }
 }
 </style>
