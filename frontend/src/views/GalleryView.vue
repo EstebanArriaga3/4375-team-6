@@ -1,53 +1,64 @@
 <template>
-  <div class="gallery-wrapper">
-    <h2 class="gallery-heading">Explore Our Creations</h2>
+  <div class="page-wrapper"> <!-- Wrapper to hold entire page -->
+    <div class="gallery-wrapper">
+      <h2 class="gallery-heading">Explore Our Creations</h2>
 
-    <!-- Categories Section -->
-    <div class="categories">
-      <div
-        class="category-box"
-        v-for="(category, index) in categories"
-        :key="index"
-        @click="openCarousel(index)"
-      >
-        <img :src="category.thumbnail" :alt="category.label" class="category-thumbnail" />
-        <div class="category-label">{{ category.label }}</div>
+      <!-- Categories Section -->
+      <div class="categories">
+        <div
+          class="category-box"
+          v-for="(category, index) in categories"
+          :key="index"
+          @click="openCarousel(index)"
+        >
+          <img :src="category.thumbnail" :alt="category.label" class="category-thumbnail" />
+          <div class="category-label">{{ category.label }}</div>
+        </div>
       </div>
-    </div>
 
-    <!-- Image Carousel Modal -->
-    <div v-if="showCarousel" class="carousel-modal" @click.self="closeCarousel">
-      <div class="carousel">
-        <button class="close-btn" @click="closeCarousel">✖</button>
+      <!-- Image Carousel Modal -->
+      <div v-if="showCarousel" class="carousel-modal" @click.self="closeCarousel">
+        <div class="carousel">
+          <button class="close-btn" @click="closeCarousel">✖</button>
 
-        <div class="carousel-wrapper">
-          <div
-            v-for="(image, imgIndex) in categories[currentCategoryIndex].images"
-            :key="imgIndex"
-            class="carousel-item"
-            :class="{ active: currentIndex === imgIndex }"
-          >
-            <img :src="image.src" :alt="image.alt" class="carousel-image"/>
+          <div class="carousel-wrapper">
+            <div
+              v-for="(image, imgIndex) in categories[currentCategoryIndex].images"
+              :key="imgIndex"
+              class="carousel-item"
+              :class="{ active: currentIndex === imgIndex }"
+            >
+              <img :src="image.src" :alt="image.alt" />
+            </div>
+          </div>
+
+          <!-- Carousel Controls -->
+          <div class="carousel-controls">
+            <button class="prev-btn" @click="prevSlide">❮</button>
+            <button class="next-btn" @click="nextSlide">❯</button>
+          </div>
+
+          <!-- Slide Indicators -->
+          <div class="carousel-indicators">
+            <span
+              v-for="(image, imgIndex) in categories[currentCategoryIndex].images"
+              :key="imgIndex"
+              @click="goToSlide(imgIndex)"
+              :class="{ active: currentIndex === imgIndex }"
+            ></span>
           </div>
         </div>
-
-        <!-- Carousel Controls -->
-        <div class="carousel-controls">
-          <button class="prev-btn" @click="prevSlide">❮</button>
-          <button class="next-btn" @click="nextSlide">❯</button>
-        </div>
-
-        <!-- Slide Indicators -->
-        <div class="carousel-indicators">
-          <span
-            v-for="(image, imgIndex) in categories[currentCategoryIndex].images"
-            :key="imgIndex"
-            @click="goToSlide(imgIndex)"
-            :class="{ active: currentIndex === imgIndex }"
-          ></span>
-        </div>
       </div>
     </div>
+
+    <footer class="sticky-footer">
+      <p>&copy; 2024 Texas Lawns & Liberty Gardens. All Rights Reserved.</p>
+      <div>
+        <a href="#">Facebook</a>
+        <a href="#">Instagram</a>
+        <a href="#">LinkedIn</a>
+      </div>
+    </footer>
   </div>
 </template>
 
@@ -130,8 +141,15 @@ export default {
 </script>
 
 <style scoped>
-/* Main Wrapper */
+/* Page Wrapper to handle sticky footer */
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 .gallery-wrapper {
+  flex: 1;
   padding: 3rem 1rem;
   text-align: center;
   background-color: #1e1e1e; /* Dark background */
@@ -140,11 +158,16 @@ export default {
 
 /* Animation for smooth fade-in effect */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Heading */
 .gallery-heading {
   font-size: 3rem;
   font-weight: bold;
@@ -157,7 +180,6 @@ export default {
   padding-bottom: 10px;
 }
 
-/* Categories Section */
 .categories {
   display: flex;
   flex-wrap: wrap;
@@ -201,7 +223,6 @@ export default {
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
 }
 
-/* Modal for Carousel */
 .carousel-modal {
   position: fixed;
   top: 0;
@@ -213,14 +234,11 @@ export default {
   align-items: center;
   background: rgba(0, 0, 0, 0.85);
   z-index: 1000;
-  padding: 1rem;
-  overflow: auto;
 }
 
-/* Carousel */
 .carousel {
   position: relative;
-  width: 90%;
+  width: 80%;
   max-width: 1000px;
   background: #2c2c2c;
   padding: 20px;
@@ -228,110 +246,49 @@ export default {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
 }
 
-.carousel-wrapper {
-  display: flex;
-  justify-content: center;
-  transition: transform 0.5s ease-in-out;
-}
-
-.carousel-item {
-  display: none;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.5s ease-in-out;
-}
-
-.carousel-item.active {
-  display: block;
-  opacity: 1;
-}
-
 .carousel img {
   width: 100%;
-  max-height: 80vh; /* Auto-scaling for smaller devices */
-  object-fit: contain; /* Maintain aspect ratio without cropping */
+  height: auto;
   border-radius: 15px;
+  object-fit: contain;
 }
 
-/* Close Button */
+/* Enhanced Close Button */
 .close-btn {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: rgba(255, 0, 0, 0.8);
+  background: #f44336;
   color: white;
   border: none;
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   cursor: pointer;
-  padding: 10px;
-  border-radius: 50%;
-  z-index: 10;
-}
-
-/* Controls */
-.carousel-controls {
-  display: flex;
-  justify-content: space-between;
-  position: absolute;
-  width: 100%;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
-  pointer-events: none;
-}
-
-.prev-btn,
-.next-btn {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: white;
-  border: none;
-  padding: 15px;
-  cursor: pointer;
-  font-size: 1.8rem;
-  pointer-events: all;
+  padding: 12px;
   border-radius: 50%;
   transition: background-color 0.3s ease;
 }
 
-.prev-btn:hover,
-.next-btn:hover {
-  background-color: rgba(40, 167, 69, 0.8);
+.close-btn:hover {
+  background-color: #d32f2f;
 }
 
-/* Indicators */
-.carousel-indicators {
-  display: flex;
-  justify-content: center;
-  margin-top: 15px;
+/* Footer Sticky Fix */
+.sticky-footer {
+  background-color: var(--color-background-mute);
+  color: var(--color-text);
+  text-align: center;
+  padding: 1rem;
+  width: 100%;
+  margin-top: auto; /* Makes sure footer sticks to the bottom */
 }
 
-.carousel-indicators span {
-  width: 14px;
-  height: 14px;
-  margin: 0 6px;
-  background-color: rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  cursor: pointer;
+footer a {
+  margin: 0 10px;
+  color: var(--color-primary);
+  transition: color 0.3s ease;
 }
 
-.carousel-indicators span.active {
-  background-color: rgba(255, 255, 255, 1);
-}
-
-/* Responsive Styles */
-@media (max-width: 768px) {
-  .category-box {
-    width: 100%;
-  }
-
-  .carousel {
-    width: 95%;
-    padding: 10px;
-  }
-
-  .close-btn {
-    font-size: 1.5rem;
-    padding: 8px;
-  }
+footer a:hover {
+  color: var(--color-primary-light);
 }
 </style>
