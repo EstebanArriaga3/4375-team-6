@@ -35,9 +35,6 @@
           rows="5"
           placeholder="Provide size, details, and requirements..."
         ></textarea>
-      </div>
-
-      <div class="description-section">
         <label for="contact">Email Address:</label>
         <textarea
           id="email"
@@ -107,20 +104,48 @@
   color: var(--color-text);
 }
 
-.description-section label {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-  color: var(--color-text-soft);
+
+
+.description-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #ffffff;
 }
 
-.description-section textarea {
-  width: 100%;
-  padding: 0.8rem;
-  border-radius: 8px;
-  border: 1px solid #444; /* Darker border for consistency with the dark theme */
-  background-color: var(--color-background);
-  color: var(--color-text);
-  resize: none;
+.description-section input,
+.description-section textarea,
+.description-section select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #555;
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: #333;
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.description-section input::placeholder,
+.description-section textarea::placeholder {
+    color: #888;
+}
+
+.description-section button {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.description-section button:hover {
+    background-color: #218838;
 }
 
 .submit-section {
