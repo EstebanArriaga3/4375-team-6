@@ -51,7 +51,7 @@
       </div>
     </div>
 
-    <footer class="sticky-footer">
+    <footer class="sticky-footer" opacity:0>
       <p>&copy; 2024 Texas Lawns & Liberty Gardens. All Rights Reserved.</p>
       <div>
         <a href="#">Facebook</a>
