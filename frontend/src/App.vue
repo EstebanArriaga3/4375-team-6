@@ -35,7 +35,7 @@ function toggleMenu() {
       <RouterView />
     </main>
 
-    <footer>
+    <footer class="sticky-footer">
       <p>&copy; 2024 Texas Lawns & Liberty Gardens. All Rights Reserved.</p>
       <div>
         <a href="#">Facebook</a>
@@ -68,6 +68,24 @@ main {
 
 nav.active {
   display: flex !important;
+}
+.sticky-footer {
+  background-color: var(--color-background-mute);
+  color: var(--color-text);
+  text-align: center;
+  padding: 1rem;
+  width: 100%;
+  margin-top: auto; /* Makes sure footer sticks to the bottom */
+}
+
+footer a {
+  margin: 0 10px;
+  color: var(--color-primary);
+  transition: color 0.3s ease;
+}
+
+footer a:hover {
+  color: var(--color-primary-light);
 }
 
 @media (max-width: 768px) {

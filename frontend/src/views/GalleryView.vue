@@ -50,15 +50,6 @@
         </div>
       </div>
     </div>
-
-    <footer class="sticky-footer" opacity:0>
-      <p>&copy; 2024 Texas Lawns & Liberty Gardens. All Rights Reserved.</p>
-      <div>
-        <a href="#">Facebook</a>
-        <a href="#">Instagram</a>
-        <a href="#">LinkedIn</a>
-      </div>
-    </footer>
   </div>
 </template>
 
@@ -272,23 +263,4 @@ export default {
   background-color: #d32f2f;
 }
 
-/* Footer Sticky Fix */
-.sticky-footer {
-  background-color: var(--color-background-mute);
-  color: var(--color-text);
-  text-align: center;
-  padding: 1rem;
-  width: 100%;
-  margin-top: auto; /* Makes sure footer sticks to the bottom */
-}
-
-footer a {
-  margin: 0 10px;
-  color: var(--color-primary);
-  transition: color 0.3s ease;
-}
-
-footer a:hover {
-  color: var(--color-primary-light);
-}
 </style>
