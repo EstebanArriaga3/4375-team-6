@@ -1,6 +1,8 @@
 <template>
   <div class="gallery-wrapper">
-    <h2 class="gallery-heading">Explore Our Work</h2>
+    <h2 class="gallery-heading">Explore Our Creations</h2>
+
+    <!-- Categories Section -->
     <div class="categories">
       <div
         class="category-box"
@@ -13,9 +15,11 @@
       </div>
     </div>
 
-    <div v-if="showCarousel" class="carousel-modal">
+    <!-- Image Carousel Modal -->
+    <div v-if="showCarousel" class="carousel-modal" @click.self="closeCarousel">
       <div class="carousel">
         <button class="close-btn" @click="closeCarousel">✖</button>
+
         <div class="carousel-wrapper">
           <div
             v-for="(image, imgIndex) in categories[currentCategoryIndex].images"
@@ -26,10 +30,14 @@
             <img :src="image.src" :alt="image.alt" />
           </div>
         </div>
+
+        <!-- Carousel Controls -->
         <div class="carousel-controls">
           <button class="prev-btn" @click="prevSlide">❮</button>
           <button class="next-btn" @click="nextSlide">❯</button>
         </div>
+
+        <!-- Slide Indicators -->
         <div class="carousel-indicators">
           <span
             v-for="(image, imgIndex) in categories[currentCategoryIndex].images"
@@ -101,7 +109,7 @@ export default {
     openCarousel(categoryIndex) {
       this.currentCategoryIndex = categoryIndex;
       this.showCarousel = true;
-      this.currentIndex = 0; // Reset the slide index when opening a new carousel
+      this.currentIndex = 0; // Reset slide index when opening a new carousel
     },
     closeCarousel() {
       this.showCarousel = false;
@@ -122,39 +130,55 @@ export default {
 </script>
 
 <style scoped>
+/* Main Wrapper */
 .gallery-wrapper {
-  padding: 2rem;
+  padding: 3rem 1rem;
   text-align: center;
+  background-color: #1e1e1e; /* Dark background */
+  animation: fadeIn 1s ease-in-out;
 }
 
+/* Animation for smooth fade-in effect */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Heading */
 .gallery-heading {
-  font-size: 2.5rem;
+  font-size: 3rem;
   font-weight: bold;
-  margin-bottom: 2rem;
-  color: #dddddd;
+  margin-bottom: 3rem;
+  color: #f5f5f5;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border-bottom: 3px solid #28a745;
+  display: inline-block;
+  padding-bottom: 10px;
 }
 
+/* Categories Section */
 .categories {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 30px;
+  gap: 40px;
 }
 
 .category-box {
   position: relative;
-  width: 300px;
-  height: 200px;
-  border-radius: 15px;
+  width: 320px;
+  height: 220px;
+  border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
 
 .category-box:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  transform: scale(1.08);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5);
 }
 
 .category-thumbnail {
@@ -172,9 +196,12 @@ export default {
   background: rgba(0, 0, 0, 0.7);
   color: white;
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
 }
 
+/* Modal for Carousel */
 .carousel-modal {
   position: fixed;
   top: 0;
@@ -184,24 +211,25 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.85);
   z-index: 1000;
 }
 
+/* Carousel */
 .carousel {
   position: relative;
   width: 80%;
-  max-width: 900px;
-  background: white;
+  max-width: 1000px;
+  background: #2c2c2c;
   padding: 20px;
-  border-radius: 15px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
 }
 
 .carousel-wrapper {
   display: flex;
-  transition: transform 0.5s ease-in-out;
-  width: 100%;
   justify-content: center;
+  transition: transform 0.5s ease-in-out;
 }
 
 .carousel-item {
@@ -219,24 +247,26 @@ export default {
 .carousel img {
   width: 100%;
   height: auto;
-  border-radius: 10px;
+  border-radius: 15px;
   object-fit: contain;
 }
 
+/* Close Button */
 .close-btn {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(255, 0, 0, 0.8);
   color: white;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   cursor: pointer;
-  padding: 5px 10px;
+  padding: 10px;
   border-radius: 50%;
   z-index: 10;
 }
 
+/* Controls */
 .carousel-controls {
   display: flex;
   justify-content: space-between;
@@ -250,32 +280,50 @@ export default {
 
 .prev-btn,
 .next-btn {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7);
   color: white;
   border: none;
-  padding: 10px;
+  padding: 15px;
   cursor: pointer;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   pointer-events: all;
-  z-index: 1;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
 }
 
+.prev-btn:hover,
+.next-btn:hover {
+  background-color: rgba(40, 167, 69, 0.8);
+}
+
+/* Indicators */
 .carousel-indicators {
   display: flex;
   justify-content: center;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 .carousel-indicators span {
-  width: 12px;
-  height: 12px;
-  margin: 0 5px;
-  background-color: rgba(0, 0, 0, 0.3);
+  width: 14px;
+  height: 14px;
+  margin: 0 6px;
+  background-color: rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   cursor: pointer;
 }
 
 .carousel-indicators span.active {
-  background-color: rgba(0, 0, 0, 1);
+  background-color: rgba(255, 255, 255, 1);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .category-box {
+    width: 100%;
+  }
+
+  .carousel {
+    width: 95%;
+  }
 }
 </style>
