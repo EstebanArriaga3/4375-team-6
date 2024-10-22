@@ -27,7 +27,7 @@
             class="carousel-item"
             :class="{ active: currentIndex === imgIndex }"
           >
-            <img :src="image.src" :alt="image.alt" />
+            <img :src="image.src" :alt="image.alt" class="carousel-image"/>
           </div>
         </div>
 
@@ -213,12 +213,14 @@ export default {
   align-items: center;
   background: rgba(0, 0, 0, 0.85);
   z-index: 1000;
+  padding: 1rem;
+  overflow: auto;
 }
 
 /* Carousel */
 .carousel {
   position: relative;
-  width: 80%;
+  width: 90%;
   max-width: 1000px;
   background: #2c2c2c;
   padding: 20px;
@@ -246,9 +248,9 @@ export default {
 
 .carousel img {
   width: 100%;
-  height: auto;
+  max-height: 80vh; /* Auto-scaling for smaller devices */
+  object-fit: contain; /* Maintain aspect ratio without cropping */
   border-radius: 15px;
-  object-fit: contain;
 }
 
 /* Close Button */
@@ -324,6 +326,12 @@ export default {
 
   .carousel {
     width: 95%;
+    padding: 10px;
+  }
+
+  .close-btn {
+    font-size: 1.5rem;
+    padding: 8px;
   }
 }
 </style>
