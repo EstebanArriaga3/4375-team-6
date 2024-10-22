@@ -150,7 +150,6 @@ def aInvoices():
     return 'Invoice added successfully!'
 
 @app.route('/api/Reviews/add', methods=['POST'])
-@requires_auth
 def aReviews():
     request_data = request.get_json()
     addServiceID = request_data['ServiceID']
