@@ -11,16 +11,20 @@
         </div>
 
         <!-- Customer Reviews Section -->
-        <div class="review" v-for="review in reviews" :key="review.id">
-            <h2>{{ review.name }}</h2>
-            <p>{{ review.text }}</p>
-            <p class="rating">Rating: {{ review.rating }} / 5</p>
+        <div class="reviews-container">
+            <div class="review" v-for="review in reviews" :key="review.id">
+                <div class="review-header">
+                    <h2>{{ review.name }}</h2>
+                    <p class="rating">★ {{ review.rating }} / 5</p>
+                </div>
+                <p class="review-text">{{ review.text }}</p>
+            </div>
         </div>
 
         <!-- Leave a Review Section -->
         <div class="leave-review">
-            <h2>Leave a Review</h2>
-            <input type="text" v-model="newReview.name" placeholder="Your Name">
+            <h2>Leave Your Review</h2>
+            <input type="text" v-model="newReview.name" placeholder="Your Name" />
             <textarea v-model="newReview.text" placeholder="Your Review"></textarea>
             <select v-model="newReview.rating">
                 <option disabled value="">Rating</option>
@@ -30,7 +34,7 @@
                 <option value="2">2 - Below Average</option>
                 <option value="1">1 - Poor</option>
             </select>
-            <button @click="submitReview">Submit</button>
+            <button @click="submitReview">Submit Review</button>
         </div>
     </div>
 </template>
@@ -66,50 +70,152 @@ export default {
 </script>
 
 <style scoped>
+/* Main Container */
 .reviews-page {
-    padding: 20px;
+    padding: 40px 20px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #181818;
+    color: #f0f0f0;
+    text-align: center;
 }
 
-.description {
-    margin-bottom: 40px;
-    font-size: 18px;
-    color: #555;
-}
-
-.review {
+/* Title */
+h1 {
+    font-size: 2.8rem;
     margin-bottom: 20px;
-    border-bottom: 1px solid #ccc;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 700;
+    border-bottom: 2px solid #444;
     padding-bottom: 10px;
 }
 
-.rating {
-    font-weight: bold;
-    color: green;
+/* Description */
+.description {
+    font-size: 1.2rem;
+    color: #999;
+    margin-bottom: 60px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.8;
 }
 
-.leave-review {
-    margin-top: 40px;
+/* Reviews Section */
+.reviews-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
 }
 
-.leave-review input, 
-.leave-review textarea, 
-.leave-review select {
-    display: block;
+.review {
+    background-color: #222;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.review:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.8);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 10px;
-    padding: 8px;
-    width: 100%;
-    max-width: 400px;
 }
 
-button {
-    padding: 10px 20px;
-    background-color: green;
+h2 {
+    font-size: 1.4rem;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.rating {
+    font-size: 1.2rem;
+    color: #f39c12;
+    font-weight: bold;
+}
+
+/* Review Text */
+.review-text {
+    color: #ccc;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* Leave a Review Section */
+.leave-review {
+    margin-top: 60px;
+    padding: 30px;
+    background-color: #222;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    text-align: left;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.leave-review h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+.leave-review input,
+.leave-review textarea,
+.leave-review select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #555;
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: #333;
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.leave-review input::placeholder,
+.leave-review textarea::placeholder {
+    color: #888;
+}
+
+.leave-review button {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background-color: #28a745;
     color: white;
     border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-button:hover {
-    background-color: darkgreen;
+.leave-review button:hover {
+    background-color: #218838;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .leave-review,
+    .description {
+        padding: 20px;
+    }
+
+    .reviews-container {
+        grid-template-columns: 1fr;
+    }
+
+    h1 {
+        font-size: 2.2rem;
+    }
 }
 </style>
