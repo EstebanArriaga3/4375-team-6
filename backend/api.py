@@ -18,18 +18,24 @@ creds = Credentials.Creds()
 conn = create_connection(creds.address, creds.username, creds.password, creds.db)
 cursor = conn.cursor(dictionary=True)
 
-'''
-masterPassword = "password"
+# Master credentials for basic auth
 masterUsername = 'username'
+masterPassword = 'password'
 
-#basic http authentication, prompts username and password:
-@app.route('/login', methods=['GET'])
-def auth_example():
-    if request.authorization:
-        if request.authorization.username == masterUsername and request.authorization.password == masterPassword:
-            return '<h1> We are allowed to be here </h1>'
-    return make_response('COULD NOT VERIFY!', 401, {'WWW-Authenticate' : 'Basic realm="Login Required"'})
-'''
+# Basic HTTP authentication function
+def authenticate(username, password):
+    if username == masterUsername and password == masterPassword:
+        return True
+    return False
+
+# Decorator for routes requiring authentication
+def requires_auth(f):
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+        if not auth or not authenticate(auth.username, auth.password):
+            return make_response('Unauthorized', 401)
+        return f(*args, **kwargs)
+    return decorated
 
 '''
 AppointmentDetails = AppDetailID, AppID, ServiceID, SubTotal
@@ -76,15 +82,9 @@ def vServices():
     return jsonify(execute_read_query(conn, 'SELECT * FROM Services'))
 
 
-
-
-
-
-
-
-
-
+# Protected routes that require authentication
 @app.route('/api/AppointmentDetails/add', methods=['POST'])
+@requires_auth
 def aAppointmentDetails():
     request_data = request.get_json()
     addAppID = request_data['AppID']
@@ -96,6 +96,7 @@ def aAppointmentDetails():
     return 'Appointment Details added successfully!'
 
 @app.route('/api/Appointments/add', methods=['POST'])
+@requires_auth
 def aAppointments():
     request_data = request.get_json()
     addCustomerID = request_data['CustomerID']
@@ -106,6 +107,7 @@ def aAppointments():
     return 'Appointment added successfully!'
 
 @app.route('/api/Customers/add', methods=['POST'])
+@requires_auth
 def aCustomers():
     request_data = request.get_json()
     addFirstName = request_data['FirstName']
@@ -119,6 +121,7 @@ def aCustomers():
     return 'Customer added successfully!'
 
 @app.route('/api/Employees/add', methods=['POST'])
+@requires_auth
 def aEmployees():
     request_data = request.get_json()
     addFirstName = request_data['FirstName']
@@ -133,6 +136,7 @@ def aEmployees():
     return 'Employee added successfully!'
 
 @app.route('/api/Invoices/add', methods=['POST'])
+@requires_auth
 def aInvoices():
     request_data = request.get_json()
     addAppDetailID = request_data['AppDetailID']
@@ -159,6 +163,7 @@ def aReviews():
     return 'Review added successfully!'
 
 @app.route('/api/Schedule/add', methods=['POST'])
+@requires_auth
 def aSchedule():
     request_data = request.get_json()
     addEmployeeID = request_data['EmployeeID']
@@ -173,6 +178,7 @@ def aSchedule():
     return 'Schedule entry added successfully!'
 
 @app.route('/api/Services/add', methods=['POST'])
+@requires_auth
 def aServices():
     request_data = request.get_json()
     addServiceName = request_data['ServiceName']
@@ -184,18 +190,10 @@ def aServices():
     conn.commit()
     return 'Service added successfully!'
 
-
-
-
-
-
-
-
-
-
-# Update methods
+# Update methods with authentication
 
 @app.route('/api/AppointmentDetails/update', methods=['PUT'])
+@requires_auth
 def uAppointmentDetails():
     request_data = request.get_json()
     updateAppDetailID = request_data['AppDetailID']
@@ -209,6 +207,7 @@ def uAppointmentDetails():
     return 'Appointment Details updated successfully!'
 
 @app.route('/api/Appointments/update', methods=['PUT'])
+@requires_auth
 def uAppointments():
     request_data = request.get_json()
     updateAppID = request_data['AppID']
@@ -221,6 +220,7 @@ def uAppointments():
     return 'Appointment updated successfully!'
 
 @app.route('/api/Customers/update', methods=['PUT'])
+@requires_auth
 def uCustomers():
     request_data = request.get_json()
     updateCustomerID = request_data['CustomerID']
@@ -235,6 +235,7 @@ def uCustomers():
     return 'Customer updated successfully!'
 
 @app.route('/api/Employees/update', methods=['PUT'])
+@requires_auth
 def uEmployees():
     request_data = request.get_json()
     updateEmployeeID = request_data['EmployeeID']
@@ -250,6 +251,7 @@ def uEmployees():
     return 'Employee updated successfully!'
 
 @app.route('/api/Invoices/update', methods=['PUT'])
+@requires_auth
 def uInvoices():
     request_data = request.get_json()
     updateInvoiceID = request_data['InvoiceID']
@@ -264,6 +266,7 @@ def uInvoices():
     return 'Invoice updated successfully!'
 
 @app.route('/api/Reviews/update', methods=['PUT'])
+@requires_auth
 def uReviews():
     request_data = request.get_json()
     updateReviewID = request_data['ReviewID']
@@ -278,6 +281,7 @@ def uReviews():
     return 'Review updated successfully!'
 
 @app.route('/api/Schedule/update', methods=['PUT'])
+@requires_auth
 def uSchedule():
     request_data = request.get_json()
     updateScheduleID = request_data['ScheduleID']
@@ -293,6 +297,7 @@ def uSchedule():
     return 'Schedule entry updated successfully!'
 
 @app.route('/api/Services/update', methods=['PUT'])
+@requires_auth
 def uServices():
     request_data = request.get_json()
     updateServiceID = request_data['ServiceID']
@@ -305,101 +310,87 @@ def uServices():
     conn.commit()
     return 'Service updated successfully!'
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Delete methods
+# Delete methods with authentication
 
 @app.route('/api/AppointmentDetails/delete', methods=['DELETE'])
+@requires_auth
 def dAppointmentDetails():
     request_data = request.get_json()
     deleteAppDetailID = request_data['AppDetailID']
 
-    cursor.execute("DELETE FROM AppointmentDetails WHERE AppDetailID = %s", [deleteAppDetailID])
+    cursor.execute("DELETE FROM AppointmentDetails WHERE AppDetailID = %s", (deleteAppDetailID,))
     conn.commit()
     return 'Appointment Details deleted successfully!'
 
 @app.route('/api/Appointments/delete', methods=['DELETE'])
+@requires_auth
 def dAppointments():
     request_data = request.get_json()
     deleteAppID = request_data['AppID']
 
-    cursor.execute("DELETE FROM Appointments WHERE AppID = %s", [deleteAppID])
+    cursor.execute("DELETE FROM Appointments WHERE AppID = %s", (deleteAppID,))
     conn.commit()
     return 'Appointment deleted successfully!'
 
 @app.route('/api/Customers/delete', methods=['DELETE'])
+@requires_auth
 def dCustomers():
     request_data = request.get_json()
     deleteCustomerID = request_data['CustomerID']
 
-    cursor.execute("DELETE FROM Customers WHERE CustomerID = %s", [deleteCustomerID])
+    cursor.execute("DELETE FROM Customers WHERE CustomerID = %s", (deleteCustomerID,))
     conn.commit()
     return 'Customer deleted successfully!'
 
 @app.route('/api/Employees/delete', methods=['DELETE'])
+@requires_auth
 def dEmployees():
     request_data = request.get_json()
     deleteEmployeeID = request_data['EmployeeID']
 
-    cursor.execute("DELETE FROM Employees WHERE EmployeeID = %s", [deleteEmployeeID])
+    cursor.execute("DELETE FROM Employees WHERE EmployeeID = %s", (deleteEmployeeID,))
     conn.commit()
     return 'Employee deleted successfully!'
 
 @app.route('/api/Invoices/delete', methods=['DELETE'])
+@requires_auth
 def dInvoices():
     request_data = request.get_json()
     deleteInvoiceID = request_data['InvoiceID']
 
-    cursor.execute("DELETE FROM Invoices WHERE InvoiceID = %s", [deleteInvoiceID])
+    cursor.execute("DELETE FROM Invoices WHERE InvoiceID = %s", (deleteInvoiceID,))
     conn.commit()
     return 'Invoice deleted successfully!'
 
 @app.route('/api/Reviews/delete', methods=['DELETE'])
+@requires_auth
 def dReviews():
     request_data = request.get_json()
     deleteReviewID = request_data['ReviewID']
 
-    cursor.execute("DELETE FROM Reviews WHERE ReviewID = %s", [deleteReviewID])
+    cursor.execute("DELETE FROM Reviews WHERE ReviewID = %s", (deleteReviewID,))
     conn.commit()
     return 'Review deleted successfully!'
 
 @app.route('/api/Schedule/delete', methods=['DELETE'])
+@requires_auth
 def dSchedule():
     request_data = request.get_json()
     deleteScheduleID = request_data['ScheduleID']
 
-    cursor.execute("DELETE FROM Schedule WHERE ScheduleID = %s", [deleteScheduleID])
+    cursor.execute("DELETE FROM Schedule WHERE ScheduleID = %s", (deleteScheduleID,))
     conn.commit()
     return 'Schedule entry deleted successfully!'
 
 @app.route('/api/Services/delete', methods=['DELETE'])
+@requires_auth
 def dServices():
     request_data = request.get_json()
     deleteServiceID = request_data['ServiceID']
 
-    cursor.execute("DELETE FROM Services WHERE ServiceID = %s", [deleteServiceID])
+    cursor.execute("DELETE FROM Services WHERE ServiceID = %s", (deleteServiceID,))
     conn.commit()
     return 'Service deleted successfully!'
 
-# Update database
-@app.route('/api/Facilities/update', methods=['PUT'])
-def uFacilities():
-    request_data = request.get_json()
-    updateID = request_data['id']
-    updateName = request_data['Name']
-
-
-
-
-app.run()
+if __name__ == '__main__':
+    app.run()
