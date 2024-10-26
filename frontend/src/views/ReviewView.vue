@@ -12,12 +12,12 @@
 
         <!-- Customer Reviews Section -->
         <div class="reviews-container">
-            <div class="review" v-for="review in reviews" :key="review.id">
+            <div class="review" v-for="review in reviews" :key="review.ReviewID">
                 <div class="review-header">
-                    <h2>{{ review.name }}</h2>
-                    <p class="rating">★ {{ review.rating }} / 5</p>
+                    <h2>{{ review.CustomerName }}</h2> <!-- Updated to show the customer's name -->
+                    <p class="rating">★ {{ review.Rating }} / 5</p>
                 </div>
-                <p class="review-text">{{ review.text }}</p>
+                <p class="review-text">{{ review.Comment }}</p>
             </div>
         </div>
 
@@ -25,8 +25,8 @@
         <div class="leave-review">
             <h2>Leave Your Review</h2>
             <input type="text" v-model="newReview.name" placeholder="Your Name" />
-            <textarea v-model="newReview.text" placeholder="Your Review" rows = '5'></textarea>
-            <select v-model="newReview.rating">
+            <textarea v-model="newReview.Comment" placeholder="Your Review" rows="5"></textarea>
+            <select v-model="newReview.Rating">
                 <option disabled value="">Rating</option>
                 <option value="5">5 - Excellent</option>
                 <option value="4">4 - Good</option>
@@ -40,31 +40,55 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     data() {
         return {
-            reviews: [
-                { id: 1, name: 'John Doe', text: 'Great landscaping service! Highly recommended.', rating: 5 },
-                { id: 2, name: 'Jane Smith', text: 'Very professional and reliable.', rating: 4 },
-                { id: 3, name: 'Mark Johnson', text: 'They transformed my garden beautifully!', rating: 5 }
-            ],
+            reviews: [],
             newReview: {
-                name: '',
-                text: '',
-                rating: ''
+                name: '', // This will hold the name of the reviewer
+                Comment: '',
+                Rating: '',
+                ReviewDate: new Date().toISOString().slice(0, 10), // Set the current date
+                ServiceID: 1, // Assuming ServiceID 1 for now
             }
         };
     },
     methods: {
-        submitReview() {
-            if (this.newReview.name && this.newReview.text && this.newReview.rating) {
-                const newId = this.reviews.length + 1;
-                this.reviews.push({ ...this.newReview, id: newId });
-                this.newReview = { name: '', text: '', rating: '' };
-            } else {
-                alert('Please fill in all fields before submitting.');
+        async fetchReviews() {
+            try {
+                const response = await axios.get('http://localhost:5000/api/Reviews');
+                this.reviews = response.data.map(review => ({
+                    ...review,
+                    CustomerName: review.name || 'Anonymous' // Ensure name is available
+                }));
+            } catch (error) {
+                console.error('Error fetching reviews:', error);
             }
+        },
+        async submitReview() {
+    if (this.newReview.name && this.newReview.Comment && this.newReview.Rating) {
+        try {
+            // Set the ReviewDate and ServiceID as part of the newReview object before submitting
+            this.newReview.ReviewDate = new Date().toISOString().slice(0, 10);
+            this.newReview.ServiceID = 1; // Assuming ServiceID 1 for now
+
+            await axios.post('http://localhost:5000/api/Reviews/add', this.newReview);
+            alert('Review submitted successfully!');
+            this.newReview = { name: '', Comment: '', Rating: '', ReviewDate: '', ServiceID: 1 };
+            this.fetchReviews(); // Refresh the reviews after submission
+        } catch (error) {
+            console.error('Error submitting review:', error);
+            alert('Failed to submit the review. Please try again.');
         }
+    } else {
+        alert('Please fill in all fields before submitting.');
+    }
+}
+    },
+    mounted() {
+        this.fetchReviews();
     }
 };
 </script>
