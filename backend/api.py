@@ -10,9 +10,12 @@ from SQL import create_connection
 from SQL import execute_read_query
 from SQL import execute_query
 import Credentials
+from flask_cors import CORS
+
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
+CORS(app)  # Enable CORS for all routes
 
 creds = Credentials.Creds()
 conn = create_connection(creds.address, creds.username, creds.password, creds.db)
@@ -43,7 +46,7 @@ Appointments = AppID, CustomerID, AppDetailID
 Customers = CustomerID, FirstName, LastName, Email, Address
 Employees = EmployeeID, FirstName, LastName, PhoneNumber, Email, Position
 Invoices = InvoiceID, AppDetailID, AppDate, Status, SubTotal
-Reviews = ReviewID, ServiceID, Rating, Comments, ReviewDate
+Reviews = ReviewID, ServiceID, Rating, Comment, ReviewDate
 Schedule = ScheduleID, EmployeeID, ServiceID, Date, StartTime, EndTime
 Services = ServiceID, ServiceName, Description, Price
 '''
@@ -71,7 +74,30 @@ def vInvoices():
 
 @app.route('/api/Reviews', methods=['GET'])
 def vReviews():
-    return jsonify(execute_read_query(conn, 'SELECT * FROM Reviews'))
+    # Create a cursor object
+    cursor = conn.cursor()
+    
+    # Execute the SQL query to fetch reviews including CustomerName
+    cursor.execute("SELECT ReviewID, ServiceID, Rating, Comment, ReviewDate, CustomerName FROM TexasLawns.Reviews")
+    
+    # Fetch all results from the executed query
+    reviews = cursor.fetchall()
+    
+    # Prepare a list to hold formatted review data
+    reviews_list = []
+    for review in reviews:
+        reviews_list.append({
+            'ReviewID': review[0],
+            'ServiceID': review[1],
+            'Rating': review[2],
+            'Comment': review[3],
+            'ReviewDate': review[4],
+            'name': review[5]  # Ensure CustomerName is included
+        })
+        
+    # Return the reviews as a JSON response
+    return jsonify(reviews_list)
+
 
 @app.route('/api/Schedule', methods=['GET'])
 def vSchedule():
@@ -160,16 +186,21 @@ def aInvoices():
 @app.route('/api/Reviews/add', methods=['POST'])
 def aReviews():
     request_data = request.get_json()
-    addReviewID = request_data['ReviewID']
-    addServiceID = request_data['ServiceID']
+    addServiceID = request_data.get('ServiceID', 1)  # Default to 1 if not provided
     addRating = request_data['Rating']
-    addComments = request_data['Comments']
+    addComment = request_data['Comment']
     addReviewDate = request_data['ReviewDate']
+    addCustomerName = request_data['name']  # Capture the customer name from the request
 
-    cursor.execute("INSERT INTO TexasLawns.Reviews (ReviewID, ServiceID, Rating, Comments, ReviewDate) VALUES (%s, %s, %s, %s, %s)",
-                        (addReviewID, addServiceID, addRating, addComments, addReviewDate))
+    cursor.execute(
+        "INSERT INTO TexasLawns.Reviews (ServiceID, Rating, Comment, ReviewDate, CustomerName) VALUES (%s, %s, %s, %s, %s)",
+        (addServiceID, addRating, addComment, addReviewDate, addCustomerName)
+    )
     conn.commit()
     return 'Review added successfully!'
+
+
+
 
 @app.route('/api/Schedule/add', methods=['POST'])
 def aSchedule():
@@ -284,11 +315,11 @@ def uReviews():
     updateReviewID = request_data['ReviewID']
     updateServiceID = request_data['ServiceID']
     updateRating = request_data['Rating']
-    updateComments = request_data['Comments']
+    updateComment = request_data['Comment']
     updateReviewDate = request_data['ReviewDate']
 
-    cursor.execute("UPDATE TexasLawns.Reviews SET ServiceID = %s, Rating = %s, Comments = %s, ReviewDate = %s WHERE ReviewID = %s", 
-                   (updateServiceID, updateRating, updateComments, updateReviewDate, updateReviewID))
+    cursor.execute("UPDATE TexasLawns.Reviews SET ServiceID = %s, Rating = %s, Comment = %s, ReviewDate = %s WHERE ReviewID = %s", 
+                   (updateServiceID, updateRating, updateComment, updateReviewDate, updateReviewID))
     conn.commit()
     return 'Review updated successfully!'
 
