@@ -263,4 +263,14 @@ export default {
   background-color: #d32f2f;
 }
 
+.carousel-item {
+  display: none;
+  transition: opacity 0.5s ease;
+}
+
+.carousel-item.active {
+  display: block;
+}
+
+
 </style>
