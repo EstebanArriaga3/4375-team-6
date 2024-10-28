@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
+import { useLoggedInUserStore } from './stores/loggedInUser.js'
 
 const showMenu = ref(false);
+const user = useLoggedInUserStore(); 
 
 function toggleMenu() {
   showMenu.value = !showMenu.value;
@@ -28,6 +30,9 @@ function toggleMenu() {
         <RouterLink to="/services">Services</RouterLink>
         <RouterLink to="/gallery">Gallery</RouterLink>
         <RouterLink to="/review">Reviews</RouterLink>
+        <RouterLink to="/login" v-if="!user.isLoggedIn">Login</RouterLink>
+        <RouterLink to="/admin" v-if="user.role === 'editor'">Dashboard</RouterLink>
+        <RouterLink to="/" v-if="user.isLoggedIn" @click.prevent="user.logout" style="cursor: pointer;">Logout</RouterLink>
       </nav>
     </header>
 
