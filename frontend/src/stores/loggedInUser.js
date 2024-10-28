@@ -14,13 +14,8 @@ export const useLoggedInUserStore = defineStore({
   },
   actions: {
     login(username, password, role) {
-      // Check if the user is trying to log in as a 'user'
-      if (username === "user" && password === "user") {
-        // Set role to 'user'
-        role = "user";
-      }
       // Check if the user is trying to log in as an 'editor'
-      else if (username === "admin" && password === "admin") {
+      if (username === "admin" && password === "admin") {
         // Set role to 'editor'
         role = "editor";
       }

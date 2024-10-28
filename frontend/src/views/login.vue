@@ -43,17 +43,8 @@ const errorMessage = ref(""); // Add a reactive variable to store error messages
 
 // Function to handle login
 const login = () => {
-  // Check if the user is trying to log in as a 'user'
-  if (username.value === "user" && password.value === "user") {
-    // Set role to 'user'
-    role.value = "user";
-    // Update the user's information in the store
-    store.login(username.value, password.value, role.value);
-    // Reset error message
-    errorMessage.value = "";
-  }
   // Check if the user is trying to log in as an 'editor'
-  else if (username.value === "admin" && password.value === "admin") {
+  if (username.value === "admin" && password.value === "admin") {
     // Set role to 'editor'
     role.value = "editor";
     // Update the user's information in the store
@@ -71,24 +62,4 @@ const login = () => {
 </script>
 
 
-
-<!-- Options API-->
-<!-- <script>
-  import { useLoggedInUserStore } from "../store/loggedInUser";
-
-  export default {
-    data() {
-      return {
-        username: "",
-        password: "",
-      }
-    },
-    setup() {
-      const store = useLoggedInUserStore();
-      return {
-        store
-      }
-    }
-  }
-</script> -->
 
