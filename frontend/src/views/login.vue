@@ -57,6 +57,7 @@ const login = () => {
     // Clear username and password fields
     username.value = "";
     password.value = "";
+    
   }
 };
 </script>

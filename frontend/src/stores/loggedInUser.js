@@ -17,18 +17,15 @@ export const useLoggedInUserStore = defineStore({
       // Check if the user is trying to log in as an 'editor'
       if (username === "admin" && password === "admin") {
         // Set role to 'editor'
-        role = "editor";
+        role = "editor",
+        this.isLoggedIn = true,
+        router.push("/");
       }
-      
       // Update the user's information in the store
       this.$patch({
-        isLoggedIn: true,
         role: role, // Set the user's role
         name: "User Name" // You may update the name based on the user's actual name
       });
-      
-      // Navigate the user to the home page
-      router.push("/");
       
     },
     logout() {
