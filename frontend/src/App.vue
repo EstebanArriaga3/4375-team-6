@@ -30,10 +30,22 @@ function toggleMenu() {
         <RouterLink to="/services">Services</RouterLink>
         <RouterLink to="/gallery">Gallery</RouterLink>
         <RouterLink to="/review">Reviews</RouterLink>
+
+      </nav>
+
+    </header>
+    <header class="smallheader">
+      <div>
+
+      </div>
+      <div class="adminnav">
         <RouterLink to="/login" v-if="!user.isLoggedIn">Login</RouterLink>
         <RouterLink to="/admin" v-if="user.role === 'editor'">Dashboard</RouterLink>
+        <RouterLink to="/editgallery" v-if="user.role === 'editor'">Edit Gallery</RouterLink>
+        <RouterLink to="/editreview" v-if="user.role === 'editor'">Edit Review</RouterLink>
+        <RouterLink to="/editservices" v-if="user.role === 'editor'">Edit Services</RouterLink>
         <RouterLink to="/" v-if="user.isLoggedIn" @click.prevent="user.logout" style="cursor: pointer;">Logout</RouterLink>
-      </nav>
+    </div>
     </header>
 
     <main>
@@ -58,10 +70,22 @@ header {
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
+  margin-top:25px;
+}
+.smallheader{
+  display: flex;
+  justify-content: right;
+  align-items: right;
+  margin-top: 0px;
+  height: 20px;
+}
+.adminnav{
+  display: inline-flex;
+  padding: 10px;
 }
 
 main {
-  padding-top: 100px; /* To avoid overlap with fixed header */
+  padding-top: 125px; /* To avoid overlap with fixed header */
 }
 
 /* Mobile hamburger active state */
