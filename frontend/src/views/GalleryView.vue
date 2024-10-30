@@ -228,21 +228,28 @@ export default {
 .carousel {
   position: relative;
   width: 90%;
-  max-width: 1000px;
+  max-width: 900px;
+  max-height: 80vh;
   background: #2c2c2c;
   padding: 20px;
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 }
 
 .carousel img {
-  width: 100%;
+  width: auto;
   height: auto;
-  border-radius: 15px;
+  max-width: 100%;
+  max-height: 70vh;
   object-fit: contain;
+  border-radius: 15px;
+  margin: auto;
 }
 
-/* Enhanced Close Button */
 .close-btn {
   position: absolute;
   top: 10px;
@@ -270,12 +277,13 @@ export default {
   display: block;
 }
 
-/* Arrow Buttons */
 .carousel-controls {
+  position: absolute;
+  top: 50%;
+  width: 100%;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-top: 20px;
+  transform: translateY(-50%);
 }
 
 .prev-btn,
@@ -295,10 +303,14 @@ export default {
   background-color: #555;
 }
 
-/* Slide Indicators */
 .carousel-indicators {
+  position: absolute;
+  bottom: 10px; /* Position the indicators at the bottom */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Adjust to align perfectly in the center */
   display: flex;
   justify-content: center;
+  gap: 10px; /* Add spacing between indicators */
   margin-top: 15px;
 }
 
@@ -308,7 +320,6 @@ export default {
   background-color: #666;
   border-radius: 50%;
   display: inline-block;
-  margin: 0 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
