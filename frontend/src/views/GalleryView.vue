@@ -132,7 +132,6 @@ export default {
 </script>
 
 <style scoped>
-/* Page Wrapper to handle sticky footer */
 .page-wrapper {
   display: flex;
   flex-direction: column;
@@ -143,11 +142,10 @@ export default {
   flex: 1;
   padding: 3rem 1rem;
   text-align: center;
-  background-color: #1e1e1e; /* Dark background */
+  background-color: #1e1e1e;
   animation: fadeIn 1s ease-in-out;
 }
 
-/* Animation for smooth fade-in effect */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -229,7 +227,7 @@ export default {
 
 .carousel {
   position: relative;
-  width: 80%;
+  width: 90%;
   max-width: 1000px;
   background: #2c2c2c;
   padding: 20px;
@@ -272,5 +270,88 @@ export default {
   display: block;
 }
 
+/* Arrow Buttons */
+.carousel-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
 
+.prev-btn,
+.next-btn {
+  background: #333;
+  color: white;
+  font-size: 1.8rem;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.prev-btn:hover,
+.next-btn:hover {
+  background-color: #555;
+}
+
+/* Slide Indicators */
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.carousel-indicators span {
+  width: 12px;
+  height: 12px;
+  background-color: #666;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.carousel-indicators span.active {
+  background-color: #28a745;
+}
+
+.carousel-indicators span:hover {
+  background-color: #a0a0a0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .gallery-heading {
+    font-size: 2rem;
+  }
+
+  .category-box {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .carousel {
+    width: 95%;
+  }
+
+  .prev-btn,
+  .next-btn {
+    font-size: 1.5rem;
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery-heading {
+    font-size: 1.5rem;
+  }
+
+  .prev-btn,
+  .next-btn {
+    font-size: 1.2rem;
+    padding: 6px 8px;
+  }
+}
 </style>
