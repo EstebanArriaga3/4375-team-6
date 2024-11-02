@@ -18,6 +18,7 @@
                     <p class="rating">★ {{ review.Rating }} / 5</p>
                 </div>
                 <p class="review-text">{{ review.Comment }}</p>
+                <button @click="deleteReview(review.ReviewID)">Delete Review</button> <!-- Delete button -->
             </div>
         </div>
 
@@ -68,24 +69,34 @@ export default {
             }
         },
         async submitReview() {
-    if (this.newReview.name && this.newReview.Comment && this.newReview.Rating) {
-        try {
-            // Set the ReviewDate and ServiceID as part of the newReview object before submitting
-            this.newReview.ReviewDate = new Date().toISOString().slice(0, 10);
-            this.newReview.ServiceID = 1; // Assuming ServiceID 1 for now
+            if (this.newReview.name && this.newReview.Comment && this.newReview.Rating) {
+                try {
+                    // Set the ReviewDate and ServiceID as part of the newReview object before submitting
+                    this.newReview.ReviewDate = new Date().toISOString().slice(0, 10);
+                    this.newReview.ServiceID = 1; // Assuming ServiceID 1 for now
 
-            await axios.post('http://localhost:5000/api/Reviews/add', this.newReview);
-            alert('Review submitted successfully!');
-            this.newReview = { name: '', Comment: '', Rating: '', ReviewDate: '', ServiceID: 1 };
-            this.fetchReviews(); // Refresh the reviews after submission
-        } catch (error) {
-            console.error('Error submitting review:', error);
-            alert('Failed to submit the review. Please try again.');
+                    await axios.post('http://localhost:5000/api/Reviews/add', this.newReview);
+                    alert('Review submitted successfully!');
+                    this.newReview = { name: '', Comment: '', Rating: '', ReviewDate: '', ServiceID: 1 };
+                    this.fetchReviews(); // Refresh the reviews after submission
+                } catch (error) {
+                    console.error('Error submitting review:', error);
+                    alert('Failed to submit the review. Please try again.');
+                }
+            } else {
+                alert('Please fill in all fields before submitting.');
+            }
+        },
+        async deleteReview(reviewId) {
+            try {
+                await axios.delete('http://localhost:5000/api/Reviews/delete', { data: { review_id: reviewId } });
+                alert('Review deleted successfully!');
+                this.fetchReviews(); // Refresh the reviews after deletion
+            } catch (error) {
+                console.error('Error deleting review:', error);
+                alert('Failed to delete the review. Please try again.');
+            }
         }
-    } else {
-        alert('Please fill in all fields before submitting.');
-    }
-}
     },
     mounted() {
         this.fetchReviews();
@@ -234,6 +245,22 @@ h2 {
 
 .leave-review button:hover {
     background-color: #218838;
+}
+
+/* Delete Review Button */
+.review button {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #dc3545; /* Bootstrap Danger Color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.review button:hover {
+    background-color: #c82333; /* Darker shade on hover */
 }
 
 /* Responsive */
