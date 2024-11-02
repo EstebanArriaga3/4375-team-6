@@ -5,24 +5,24 @@
       <p>Let us know your needs, and we’ll craft the perfect solution tailored to you.</p>
     </div>
 
-    <form class="quote-form">
+    <form class="quote-form" @submit.prevent="submitQuote">
       <div class="services-section">
         <h2>Select Services:</h2>
         <div class="checkbox-group">
           <div class="checkbox">
-            <input type="checkbox" id="fences-gates" value="fences-gates" />
+            <input type="checkbox" id="fences-gates" v-model="services.fence_gates_service" />
             <label for="fences-gates">Fences and Gates</label>
           </div>
           <div class="checkbox">
-            <input type="checkbox" id="raised-beds" value="raised-beds" />
+            <input type="checkbox" id="raised-beds" v-model="services.raised_beds_service" />
             <label for="raised-beds">Raised Beds</label>
           </div>
           <div class="checkbox">
-            <input type="checkbox" id="landscaping" value="landscaping" />
+            <input type="checkbox" id="landscaping" v-model="services.landscaping_service" />
             <label for="landscaping">Landscaping</label>
           </div>
           <div class="checkbox">
-            <input type="checkbox" id="gutters-roofing" value="gutters-roofing" />
+            <input type="checkbox" id="gutters-roofing" v-model="services.gutters_roofing_service" />
             <label for="gutters-roofing">Gutters & Roofing</label>
           </div>
         </div>
@@ -33,11 +33,12 @@
         <textarea
           id="description"
           rows="4"
+          v-model="description"
           placeholder="Describe the size, location, and specifics of your project..."
         ></textarea>
 
         <label for="email">Your Email Address:</label>
-        <input type="email" id="email" placeholder="Enter your email" />
+        <input type="email" id="email" v-model="email" placeholder="Enter your email" />
       </div>
 
       <div class="submit-section">
@@ -46,6 +47,51 @@
     </form>
   </section>
 </template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+import axios from 'axios';
+
+const services = ref({
+  fence_gates_service: false,
+  raised_beds_service: false,
+  landscaping_service: false,
+  gutters_roofing_service: false,
+});
+const description = ref('');
+const email = ref('');
+
+async function submitQuote() {
+  try {
+    const payload = {
+      email_address: email.value,
+      description: description.value,
+      fence_gates_service: services.value.fence_gates_service,
+      raised_beds_service: services.value.raised_beds_service,
+      landscaping_service: services.value.landscaping_service,
+      gutters_roofing_service: services.value.gutters_roofing_service,
+    };
+
+    const response = await axios.post('http://localhost:5000/api/Quotes/add', payload);
+    console.log('Quote submitted successfully:', response.data);
+    // Optionally reset form values
+    resetForm();
+  } catch (error) {
+    console.error('Error submitting quote:', error);
+  }
+}
+
+function resetForm() {
+  email.value = '';
+  description.value = '';
+  services.value = {
+    fence_gates_service: false,
+    raised_beds_service: false,
+    landscaping_service: false,
+    gutters_roofing_service: false,
+  };
+}
+</script>
 
 <style scoped>
 /* Container */
