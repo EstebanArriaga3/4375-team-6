@@ -414,11 +414,28 @@ def dInvoices():
 @app.route('/api/Reviews/delete', methods=['DELETE'])
 def dReviews():
     request_data = request.get_json()
-    deleteReviewID = request_data['ReviewID']
 
-    cursor.execute("DELETE FROM TexasLawns.Reviews WHERE ReviewID = %s", [deleteReviewID])
-    conn.commit()
-    return 'Review deleted successfully!'
+    # Validate the input
+    if 'review_id' not in request_data:
+        return {'message': 'Review ID is required.'}, 400
+
+    review_id = request_data['review_id']
+
+    try:
+        # Check if the review exists
+        cursor.execute("SELECT ReviewID FROM TexasLawns.Reviews WHERE ReviewID = %s", [review_id])
+        review = cursor.fetchone()
+
+        if review:
+            cursor.execute("DELETE FROM TexasLawns.Reviews WHERE ReviewID = %s", [review_id])
+            conn.commit()
+            return {'message': 'Review deleted successfully!'}, 200
+        else:
+            return {'message': 'Review not found.'}, 404
+    except Exception as e:
+        print("Error during deletion:", str(e))
+        return {'message': 'An error occurred while deleting the review.'}, 500
+
 
 @app.route('/api/Schedule/delete', methods=['DELETE'])
 def dSchedule():
