@@ -49,6 +49,8 @@ Invoices = InvoiceID, AppDetailID, AppDate, Status, SubTotal
 Reviews = ReviewID, ServiceID, Rating, Comment, ReviewDate
 Schedule = ScheduleID, EmployeeID, ServiceID, Date, StartTime, EndTime
 Services = ServiceID, ServiceName, Description, Price
+Quote = email_address, description, fence_gates_service, landscaping_service, raised_beds_service,
+gutters_roofing_service, created_at, status, last_updated
 '''
 
 # View all data based on specifications, No id included
@@ -107,7 +109,9 @@ def vSchedule():
 def vServices():
     return jsonify(execute_read_query(conn, 'SELECT * FROM Services'))
 
-
+@app.route('/api/Quotes', methods=['GET'])
+def vQuotes():
+    return jsonify(execute_read_query(conn, 'SELECT * FROM Quotes'))
 
 
 
@@ -230,8 +234,27 @@ def aServices():
     conn.commit()
     return 'Service added successfully!'
 
+@app.route('/api/Quotes/add', methods=['POST'])
+def add_quote():
+    request_data = request.get_json()
+    
+    email_address = request_data['email_address']
+    description = request_data['description']
+    fence_gates_service = request_data['fence_gates_service']
+    raised_beds_service = request_data['raised_beds_service']
+    landscaping_service = request_data['landscaping_service']
+    gutters_roofing_service = request_data['gutters_roofing_service']
 
-
+    cursor.execute(
+        """
+        INSERT INTO TexasLawns.Quotes (email_address, description, fence_gates_service, raised_beds_service, landscaping_service, gutters_roofing_service)
+        VALUES (%s, %s, %s, %s, %s, %s)
+        """,
+        (email_address, description, fence_gates_service, raised_beds_service, landscaping_service, gutters_roofing_service)
+    )
+    conn.commit()
+    
+    return 'Quote added successfully!'
 
 
 
