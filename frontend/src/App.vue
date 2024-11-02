@@ -41,7 +41,7 @@ function toggleMenu() {
       <div class="adminnav">
         <RouterLink to="/login" v-if="!user.isLoggedIn">Login</RouterLink>
         <RouterLink to="/admin" v-if="user.role === 'editor'">Dashboard</RouterLink>
-        <RouterLink to="/editgallery" v-if="user.role === 'editor'">Edit Gallery</RouterLink>
+        <RouterLink to="/quoterequest" v-if="user.role === 'editor'">Quote Requests</RouterLink>
         <RouterLink to="/editreview" v-if="user.role === 'editor'">Edit Review</RouterLink>
         <RouterLink to="/editservices" v-if="user.role === 'editor'">Edit Services</RouterLink>
         <RouterLink to="/" v-if="user.isLoggedIn" @click.prevent="user.logout" style="cursor: pointer;">Logout</RouterLink>
