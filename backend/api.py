@@ -32,13 +32,44 @@ def authenticate(username, password):
     return False
 
 # Decorator for routes requiring authentication
-def requires_auth(f):
-    def decorated(*args, **kwargs):
-        auth = request.authorization
-        if not auth or not authenticate(auth.username, auth.password):
-            return make_response('Unauthorized', 401)
+def authenticate(username, password):
+    print(f"Attempting to authenticate user: {username}")  # Debugging line
+    print(f"Entered Password: {password}")  # Debugging line
+    print(f"Stored Username: {masterUsername}, Stored Password: {masterPassword}")  # Debugging line
+    if username == masterUsername and password == masterPassword:
+        return True
+    return False
+
+app.secret_key = 'your_secret_key'
+
+#login api
+@app.route('/api/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+    
+    # Check authentication
+    if authenticate(username, password):
+        session['logged_in'] = True
+        session['username'] = username
+        return jsonify({'success': True, 'role': 'admin'}), 200  # Include role or other data if needed
+    else:
+        return jsonify({'success': False}), 401
+
+@app.route('/api/protected', methods=['GET'])
+def protected():
+    if 'username' not in session:
+        return jsonify({'message': 'Unauthorized'}), 401
+    return jsonify({'message': f'Hello, {session["username"]}!'})
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'logged_in' not in session or not session['logged_in']:
+            return jsonify({'message': 'Unauthorized access!'}), 401
         return f(*args, **kwargs)
-    return decorated
+    return decorated_function
 
 '''
 AppointmentDetails = AppDetailID, AppID, ServiceID, SubTotal
