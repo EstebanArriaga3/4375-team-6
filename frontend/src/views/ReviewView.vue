@@ -1,27 +1,27 @@
 <template>
     <div class="reviews-page">
         <h1>Customer Reviews</h1>
-
-        <!-- Description Section -->
+  
         <div class="description">
             <p>
                 Welcome to our landscaping company! We take pride in transforming outdoor spaces into beautiful, 
                 functional environments. Check out what our customers are saying about our services.
             </p>
         </div>
-
-        <!-- Customer Reviews Section -->
+  
         <div class="reviews-container">
             <div class="review" v-for="review in reviews" :key="review.ReviewID">
                 <div class="review-header">
-                    <h2>{{ review.CustomerName }}</h2> <!-- Updated to show the customer's name -->
+                    <h2>{{ review.CustomerName }}</h2>
                     <p class="rating">★ {{ review.Rating }} / 5</p>
                 </div>
                 <p class="review-text">{{ review.Comment }}</p>
-                <button @click="deleteReview(review.ReviewID)">Delete Review</button> <!-- Delete button -->
+                <button @click="editReview(review)">Edit Review</button>
+                <button @click="confirmDeleteReview(review.ReviewID)" class="delete-button">Delete Review</button>
             </div>
         </div>
-
+  
+        <EditReview v-if="showEditModal" :review="reviewToEdit" :show="showEditModal" @close="closeEditModal" />
         <!-- Leave a Review Section -->
         <div class="leave-review">
             <h2>Leave Your Review</h2>
@@ -38,15 +38,24 @@
             <button @click="submitReview">Submit Review</button>
         </div>
     </div>
-</template>
+  </template>
+  
 
-<script>
-import axios from 'axios';
-
-export default {
+  <script>
+  import axios from 'axios';
+  import EditReview from './EditReview.vue'; // Import your EditReview component
+  import { ref } from 'vue';
+  
+  export default {
+    components: {
+      EditReview,
+    },
     data() {
-        return {
-            reviews: [],
+      return {
+        reviews: [],
+        showEditModal: false,
+        reviewToEdit: null,
+        reviews: [],
             newReview: {
                 name: '', // This will hold the name of the reviewer
                 Comment: '',
@@ -54,21 +63,21 @@ export default {
                 ReviewDate: new Date().toISOString().slice(0, 10), // Set the current date
                 ServiceID: 1, // Assuming ServiceID 1 for now
             }
-        };
+      };
     },
     methods: {
-        async fetchReviews() {
-            try {
-                const response = await axios.get('http://localhost:5000/api/Reviews');
-                this.reviews = response.data.map(review => ({
-                    ...review,
-                    CustomerName: review.name || 'Anonymous' // Ensure name is available
-                }));
-            } catch (error) {
-                console.error('Error fetching reviews:', error);
-            }
-        },
-        async submitReview() {
+      async fetchReviews() {
+        try {
+          const response = await axios.get('http://localhost:5000/api/Reviews');
+          this.reviews = response.data.map(review => ({
+            ...review,
+            CustomerName: review.name || 'Anonymous',
+          }));
+        } catch (error) {
+          console.error('Error fetching reviews:', error);
+        }
+      },
+      async submitReview() {
             if (this.newReview.name && this.newReview.Comment && this.newReview.Rating) {
                 try {
                     // Set the ReviewDate and ServiceID as part of the newReview object before submitting
@@ -87,22 +96,43 @@ export default {
                 alert('Please fill in all fields before submitting.');
             }
         },
-        async deleteReview(reviewId) {
-            try {
-                await axios.delete('http://localhost:5000/api/Reviews/delete', { data: { review_id: reviewId } });
-                alert('Review deleted successfully!');
-                this.fetchReviews(); // Refresh the reviews after deletion
-            } catch (error) {
-                console.error('Error deleting review:', error);
-                alert('Failed to delete the review. Please try again.');
-            }
+      confirmDeleteReview(reviewId) {
+        if (confirm("Are you sure you want to delete this review?")) {
+          this.deleteReview(reviewId);
         }
+      },
+      async deleteReview(reviewId) {
+        try {
+          await axios.delete(`http://localhost:5000/api/Reviews/delete`, {
+            data: { review_id: reviewId }, // Send the review ID to delete
+          });
+          alert('Review deleted successfully!');
+          this.fetchReviews(); // Refresh the reviews after deletion
+        } catch (error) {
+          console.error('Error deleting review:', error);
+          alert('Failed to delete the review. Please try again.');
+        }
+      },
+      editReview(review) {
+        this.reviewToEdit = review;
+        this.showEditModal = true; // Show the edit modal
+      },
+      closeEditModal() {
+        this.showEditModal = false;
+        this.fetchReviews(); // Refresh reviews after edit
+      },
     },
     mounted() {
-        this.fetchReviews();
-    }
-};
-</script>
+      this.fetchReviews();
+    },
+  };
+  </script>
+  
+
+<style scoped>
+/* Your existing styles here */
+</style>
+
 
 <style scoped>
 /* Main Container */
