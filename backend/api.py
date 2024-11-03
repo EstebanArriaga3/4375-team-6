@@ -346,7 +346,7 @@ def uInvoices():
     return 'Invoice updated successfully!'
 
 @app.route('/api/Reviews/update', methods=['PUT'])
-@login_required
+#@login_required
 def uReviews():
     request_data = request.get_json()
     updateReviewID = request_data['ReviewID']
@@ -376,7 +376,7 @@ def uSchedule():
     return 'Schedule entry updated successfully!'
 
 @app.route('/api/Services/update', methods=['PUT'])
-@login_required
+#@login_required
 def uServices():
     request_data = request.get_json()
     updateServiceID = request_data['ServiceID']
@@ -450,7 +450,7 @@ def dInvoices():
     return 'Invoice deleted successfully!'
 
 @app.route('/api/Reviews/delete', methods=['DELETE'])
-@login_required
+#@login_required
 def dReviews():
     request_data = request.get_json()
 
@@ -486,7 +486,7 @@ def dSchedule():
     return 'Schedule entry deleted successfully!'
 
 @app.route('/api/Services/delete', methods=['DELETE'])
-@login_required
+#@login_required
 def dServices():
     request_data = request.get_json()
     deleteServiceID = request_data['ServiceID']
