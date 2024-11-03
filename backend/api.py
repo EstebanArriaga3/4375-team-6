@@ -1,22 +1,15 @@
-import hashlib
 import flask
-from flask import jsonify
-import hashlib
-import flask
-from flask import jsonify
-from flask import request, make_response
-import SQL
-from SQL import create_connection
-from SQL import execute_read_query
-from SQL import execute_query
-import Credentials
+from flask import jsonify, request, session, make_response
 from flask_cors import CORS
-
+from functools import wraps
+import Credentials
+from SQL import create_connection, execute_read_query, execute_query
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 CORS(app)  # Enable CORS for all routes
 
+# Set up credentials
 creds = Credentials.Creds()
 conn = create_connection(creds.address, creds.username, creds.password, creds.db)
 cursor = conn.cursor(dictionary=True)
@@ -27,22 +20,20 @@ masterPassword = 'password'
 
 # Basic HTTP authentication function
 def authenticate(username, password):
-    if username == masterUsername and password == masterPassword:
-        return True
-    return False
+    return username == masterUsername and password == masterPassword
 
 # Decorator for routes requiring authentication
-def authenticate(username, password):
-    print(f"Attempting to authenticate user: {username}")  # Debugging line
-    print(f"Entered Password: {password}")  # Debugging line
-    print(f"Stored Username: {masterUsername}, Stored Password: {masterPassword}")  # Debugging line
-    if username == masterUsername and password == masterPassword:
-        return True
-    return False
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'logged_in' not in session or not session['logged_in']:
+            return jsonify({'message': 'Unauthorized access!'}), 401
+        return f(*args, **kwargs)
+    return decorated_function
 
 app.secret_key = 'your_secret_key'
 
-#login api
+# Login API
 @app.route('/api/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -58,18 +49,9 @@ def login():
         return jsonify({'success': False}), 401
 
 @app.route('/api/protected', methods=['GET'])
+@login_required
 def protected():
-    if 'username' not in session:
-        return jsonify({'message': 'Unauthorized'}), 401
     return jsonify({'message': f'Hello, {session["username"]}!'})
-
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'logged_in' not in session or not session['logged_in']:
-            return jsonify({'message': 'Unauthorized access!'}), 401
-        return f(*args, **kwargs)
-    return decorated_function
 
 '''
 AppointmentDetails = AppDetailID, AppID, ServiceID, SubTotal
