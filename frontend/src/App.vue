@@ -77,13 +77,23 @@ header {
   justify-content: right;
   align-items: right;
   margin-top: 0px;
-  height: 20px;
+  height: 18px;
+  background-color: #272727;
+  box-shadow: none;
 }
 .adminnav{
   display: inline-flex;
   padding: 10px;
 }
-
+.adminnav a {
+  margin: 0 10px;
+  text-decoration: none;
+  color: var(--color-primary);
+}
+.logo {
+  display: flex;
+  align-items: center;
+}
 main {
   padding-top: 125px; /* To avoid overlap with fixed header */
 }
