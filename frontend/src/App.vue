@@ -55,8 +55,8 @@ function toggleMenu() {
     <footer class="sticky-footer">
       <p>&copy; 2024 Texas Lawns & Liberty Gardens. All Rights Reserved.</p>
       <div>
-        <a href="#">Facebook</a>
-        <a href="#">Instagram</a>
+        <a href="https://www.facebook.com/profile.php?id=61556578467091&mibextid=LQQJ4d">Facebook</a>
+        <a href="https://www.instagram.com/texas_lawns_liberty_gardens?igsh=d3B2Zmk1cmwyODJ6&utm_source=qr">Instagram</a>
         <a href="#">LinkedIn</a>
       </div>
     </footer>
