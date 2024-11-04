@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="login-field">
     <!--Header-->
     <h1 class="font-bold text-4xl text-red-700 tracking-widest text-center mt-10">Welcome</h1>
       <!--Form-->
@@ -9,7 +9,7 @@
             <span class="text-gray-700">Username</span>
             <span style="color: #ff0000">*</span>
             <input type="text"
-              class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              class=""
               placeholder v-model="username" />
           </label>
         </div>
@@ -18,13 +18,13 @@
             <span class="text-gray-700">Password</span>
             <span style="color: #ff0000">*</span>
             <input type="password"
-              class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              class=""
               placeholder v-model="password" />
           </label>
         </div>
         <!--Login button-->
         <div class="flex justify-center mt-10">
-          <button class="bg-red-700 text-white rounded" type="submit" @click="login(username, password)">Login</button>
+          <button class="" type="submit" @click="login(username, password)">Login</button>
         </div>
       </form>
     </div>
@@ -62,5 +62,41 @@ const login = () => {
 };
 </script>
 
+<style scoped>
+.login-field input,
+.login-field textarea,
+.login-field select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #555;
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: #444;
+    color: #fff;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
 
+.login-field input::placeholder,
+.login-field textarea::placeholder {
+    color: #888;
+}
+
+.login-field button {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-field button:hover {
+    background-color: #218838;
+}
+</style>
 
