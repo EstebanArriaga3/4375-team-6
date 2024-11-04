@@ -1,7 +1,7 @@
 <template>
   <div class="login-field">
     <!--Header-->
-    <h1 class="font-bold text-4xl text-red-700 tracking-widest text-center mt-10">Welcome</h1>
+    <h1>Welcome</h1>
       <!--Form-->
       <form @submit.prevent="store.login(username, password)" novalidate="true">
         <div class="flex justify-center mt-10">

@@ -12,7 +12,7 @@ function toggleMenu() {
 </script>
 
 <template>
-  <div>
+  <div class="container">
     <header>
       <div class="logo">
         <img src="@/assets/logotemp.png" alt="Logo" />
@@ -77,7 +77,7 @@ header {
   justify-content: right;
   align-items: right;
   margin-top: 0px;
-  height: 18px;
+  height: 15px;
   background-color: #272727;
   box-shadow: none;
 }
@@ -95,7 +95,13 @@ header {
   align-items: center;
 }
 main {
+  flex-grow: 1;
   padding-top: 125px; /* To avoid overlap with fixed header */
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 /* Mobile hamburger active state */
