@@ -1,12 +1,32 @@
+// Brandons version of edit review
 <template>
-  <div class="edit-review-modal" v-if="show">
-      <div class="modal-content">
-          <h2>Edit Review</h2>
-          <input v-model="review.CustomerName" placeholder="Reviewer Name" />
-          <input v-model="review.Rating" type="number" min="1" max="5" placeholder="Rating (1-5)" />
-          <textarea v-model="review.Comment" placeholder="Your Review"></textarea>
-          <button @click="updateReview">Update Review</button>
-          <button @click="close">Cancel</button>
+  <div class="reviews-page">
+      <h1>Customer Reviews</h1>
+
+      <!-- Description Section -->
+      <div class="description">
+          <p>
+              Welcome to our landscaping company! We take pride in transforming outdoor spaces into beautiful, 
+              functional environments. Check out what our customers are saying about our services.
+          </p>
+      </div>
+
+      <!-- Customer Reviews Section -->
+      <div class="reviews-container">
+          <div class="review" v-for="review in reviews" :key="review.ReviewID">
+              <div class="review-header">
+                  <h2>{{ review.CustomerName }}</h2>
+                  <p class="rating">★ {{ review.Rating }} / 5</p>
+              </div>
+              <p class="review-text">{{ review.Comment }}</p>
+          </div>
+      </div>
+
+      <!-- Delete Review Section -->
+      <div class="delete-review">
+          <h2>Delete a Review</h2>
+          <input type="text" v-model="reviewToDelete.name" placeholder="Reviewer Name" />
+          <button @click="deleteReview">Delete Review</button>
       </div>
   </div>
 </template>
@@ -15,46 +35,204 @@
 import axios from 'axios';
 
 export default {
-  props: {
-    review: Object,
-    show: Boolean,
+  data() {
+    return {
+      reviews: [],
+      reviewToDelete: {
+        name: '', // This will hold the name of the reviewer to delete
+      }
+    };
   },
   methods: {
-    async updateReview() {
+    async fetchReviews() {
       try {
-        await axios.put(`http://localhost:5000/api/Reviews/update`, this.review);
-        this.$emit('close'); // Close the modal
-        alert('Review updated successfully!');
+        const response = await axios.get('http://localhost:5000/api/Reviews');
+        this.reviews = response.data.map(review => ({
+          ...review,
+          CustomerName: review.name || 'Anonymous'
+        }));
       } catch (error) {
-        console.error('Error updating review:', error);
-        alert('Failed to update the review. Please try again.');
+        console.error('Error fetching reviews:', error);
       }
     },
-    close() {
-      this.$emit('close');
+    async deleteReview() {
+      if (this.reviewToDelete.name) {
+        try {
+          // Send DELETE request to delete the review by reviewer name
+          await axios.delete(`http://localhost:5000/api/Reviews/delete`, {
+            data: { name: this.reviewToDelete.name }
+          });
+          alert('Review deleted successfully!');
+          this.reviewToDelete.name = '';
+          this.fetchReviews(); // Refresh the reviews after deletion
+        } catch (error) {
+          console.error('Error deleting review:', error);
+          alert('Failed to delete the review. Please try again.');
+        }
+      } else {
+        alert('Please enter a reviewer name before submitting.');
+      }
     }
   },
+  mounted() {
+    this.fetchReviews();
+  }
 };
 </script>
 
 <style scoped>
-.edit-review-modal {
-  /* Basic modal styles */
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* Main Container */
+.reviews-page {
+  padding: 40px 20px;
+  font-family: 'Poppins', sans-serif;
+  background-color: #181818;
+  color: #f0f0f0;
+  text-align: center;
+  animation: fadeIn 1s ease-in-out;
 }
 
-.modal-content {
-  background: #fff;
-  padding: 20px;
+/* Animation for fade-in effect */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Title */
+h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 700;
+  border-bottom: 3px solid #444;
+  padding-bottom: 10px;
+}
+
+/* Description */
+.description {
+  font-size: 1.2rem;
+  color: #bbb;
+  margin-bottom: 50px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.8;
+}
+
+/* Reviews Section */
+.reviews-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+}
+
+.review {
+  background-color: #222;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  text-align: left;
+}
+
+.review:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.9);
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+h2 {
+  font-size: 1.6rem;
+  color: #fff;
+  font-weight: 700;
+}
+
+.rating {
+  font-size: 1.2rem;
+  color: #f39c12;
+  font-weight: bold;
+}
+
+/* Review Text */
+.review-text {
+  color: #ccc;
+  font-size: 1rem;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* Delete Review Section */
+.delete-review {
+  margin-top: 60px;
+  padding: 30px;
+  background-color: #333;
+  border-radius: 15px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.delete-review h2 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.delete-review input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #555;
   border-radius: 5px;
-  width: 400px;
+  font-size: 1rem;
+  background-color: #444;
+  color: #fff;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.delete-review input::placeholder {
+  color: #888;
+}
+
+.delete-review button {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.delete-review button:hover {
+  background-color: #c82333;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .delete-review,
+  .description {
+      padding: 20px;
+  }
+
+  .reviews-container {
+      grid-template-columns: 1fr;
+  }
+
+  h1 {
+      font-size: 2.5rem;
+  }
 }
 </style>
