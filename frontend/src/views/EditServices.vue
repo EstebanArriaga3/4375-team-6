@@ -5,25 +5,27 @@
     <!-- New Service Form -->
     <div class="new-service-form">
       <h2>Add a New Service</h2>
-      <input v-model="newService.title" placeholder="Service Title" />
-      <textarea v-model="newService.description" placeholder="Service Description"></textarea>
+      <input v-model="newService.ServiceName" placeholder="Service Title" />
+      <textarea v-model="newService.Description" placeholder="Service Description"></textarea>
+      <input v-model.number="newService.Price" placeholder="Price" type="number" />
       <button @click="addService">Add Service</button>
     </div>
 
     <!-- Service Cards Section -->
     <div class="service-cards">
-      <div v-for="(service, index) in services" :key="index" class="service-card">
+      <div v-for="(service, index) in services" :key="service.ServiceID" class="service-card">
         <div v-if="editIndex === index">
-          <input v-model="editableService.title" placeholder="Service Title" />
-          <textarea v-model="editableService.description" placeholder="Service Description"></textarea>
-          <button @click="saveEdit(index)">Save</button>
+          <input v-model="editableService.ServiceName" placeholder="Service Title" />
+          <textarea v-model="editableService.Description" placeholder="Service Description"></textarea>
+          <input v-model.number="editableService.Price" placeholder="Price" type="number" />
+          <button @click="saveEdit(service.ServiceID)">Save</button>
           <button @click="cancelEdit">Cancel</button>
         </div>
         <div v-else>
-          <h2>{{ service.title }}</h2>
-          <p>{{ service.description }}</p>
+          <h2>{{ service.ServiceName }}</h2>
+          <p>{{ service.Description }}</p>
           <button @click="editService(index)">Edit</button>
-          <button @click="deleteService(index)">Delete</button>
+          <button @click="deleteService(service.ServiceID)">Delete</button>
         </div>
       </div>
     </div>
@@ -43,54 +45,91 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
 
-const services = ref([
-  { title: 'Free Estimates', description: 'Get a free estimate for your landscaping needs.' },
-  { title: 'Lawn & Landscaping Maintenance', description: 'Keep your lawn healthy and beautiful year-round.' },
-  { title: 'Raised Bed Installation', description: 'Install elegant raised beds to enhance your garden.' },
-  { title: 'Roof/Gutter Clean-up', description: 'Ensure your roof and gutters stay clear and functional.' },
-  { title: 'Hedge Trimming', description: 'Precise trimming to keep your hedges in shape.' },
-  { title: 'Mulching', description: 'Improve soil health and enhance aesthetics with professional mulching.' },
-  { title: 'Fertilizing', description: 'Optimize lawn growth with our fertilizing services.' },
-  { title: 'Sodding', description: 'Install fresh sod for instant results.' },
-  { title: 'Debris & Weed Removal', description: 'Keep your landscape clean and weed-free.' },
-  { title: 'Firepit Creation', description: 'Add a cozy firepit for outdoor enjoyment.' },
-  { title: 'Fence Installation & Repair', description: 'Install or repair fences to secure your property.' },
-  { title: 'Herbicide Application', description: 'Professional herbicide application for weed control.' },
-  { title: 'Painting', description: 'Quality painting for fences, walls, and exteriors.' },
-  { title: 'Handyman Work', description: 'General handyman services for all your needs.' },
-  { title: 'Advertising', description: 'Promote your business with our advertising services.' },
-]);
+// Define the TypeScript interface for a service
+interface Service {
+  ServiceID: number
+  ServiceName: string
+  Description: string
+  Price: number
+}
 
-const editIndex = ref<number | null>(null);
-const editableService = ref({ title: '', description: '' });
-const newService = ref({ title: '', description: '' });
+// State for the services and editing
+const services = ref<Service[]>([]) // Array to store services fetched from the backend
+const editIndex = ref<number | null>(null) // Index of the service being edited
+const editableService = ref<Service>({ ServiceID: 0, ServiceName: '', Description: '', Price: 0 }) // Service being edited
+const newService = ref<Omit<Service, 'ServiceID'>>({ ServiceName: '', Description: '', Price: 0 }) // Data for a new service
 
+// Fetch services from the backend when component is mounted
+onMounted(async () => {
+  await fetchServices()
+})
+
+// Function to fetch services from backend
+async function fetchServices() {
+  try {
+    const response = await axios.get('/api/Services')
+    services.value = response.data // Populate the services array with data from the API
+  } catch (error) {
+    console.error('Error fetching services:', error)
+  }
+}
+
+// Enter edit mode for a specific service
 function editService(index: number) {
-  editIndex.value = index;
-  editableService.value = { ...services.value[index] };
+  editIndex.value = index
+  editableService.value = { ...services.value[index] }
 }
 
-function saveEdit(index: number) {
-  services.value[index] = { ...editableService.value };
-  editIndex.value = null;
+// Save the edited service
+async function saveEdit(serviceId: number) {
+  try {
+    await axios.put('/api/Services/update', {
+      ServiceID: serviceId,
+      ServiceName: editableService.value.ServiceName,
+      Description: editableService.value.Description,
+      Price: editableService.value.Price,
+    })
+    await fetchServices() // Refresh services after the edit
+    editIndex.value = null // Exit edit mode
+  } catch (error) {
+    console.error('Error saving service:', error)
+  }
 }
 
+// Cancel editing mode
 function cancelEdit() {
-  editIndex.value = null;
+  editIndex.value = null
 }
 
-function deleteService(index: number) {
-  services.value.splice(index, 1);
+// Delete a service
+async function deleteService(serviceId: number) {
+  try {
+    await axios.delete('/api/Services/delete', { data: { ServiceID: serviceId } })
+    await fetchServices() // Refresh services after deletion
+  } catch (error) {
+    console.error('Error deleting service:', error)
+  }
 }
 
-function addService() {
-  if (newService.value.title && newService.value.description) {
-    services.value.push({ ...newService.value });
-    newService.value = { title: '', description: '' };
+// Add a new service
+async function addService() {
+  if (newService.value.ServiceName && newService.value.Description && newService.value.Price) {
+    try {
+      await axios.post('/api/Services/add', {
+        ServiceName: newService.value.ServiceName,
+        Description: newService.value.Description,
+        Price: newService.value.Price,
+      })
+      await fetchServices() // Refresh services after adding a new one
+      newService.value = { ServiceName: '', Description: '', Price: 0 } // Reset form fields
+    } catch (error) {
+      console.error('Error adding service:', error)
+    }
   } else {
-    alert('Please provide both a title and description for the new service.');
+    alert('Please provide a title, description, and price for the new service.')
   }
 }
 </script>
