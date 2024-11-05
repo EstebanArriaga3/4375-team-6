@@ -19,15 +19,11 @@
                   <p class="rating">★ {{ review.Rating }} / 5</p>
               </div>
               <p class="review-text">{{ review.Comment }}</p>
+              <button @click="confirmDeleteReview(review.ReviewID)" class="delete-button">Delete Review</button>
           </div>
       </div>
 
-      <!-- Delete Review Section -->
-      <div class="delete-review">
-          <h2>Delete a Review</h2>
-          <input type="text" v-model="reviewToDelete.name" placeholder="Reviewer Name" />
-          <button @click="deleteReview">Delete Review</button>
-      </div>
+
   </div>
 </template>
 
@@ -38,9 +34,7 @@ export default {
   data() {
     return {
       reviews: [],
-      reviewToDelete: {
-        name: '', // This will hold the name of the reviewer to delete
-      }
+
     };
   },
   methods: {
@@ -55,24 +49,24 @@ export default {
         console.error('Error fetching reviews:', error);
       }
     },
-    async deleteReview() {
-      if (this.reviewToDelete.name) {
+    confirmDeleteReview(reviewId) {
+        if (confirm("Are you sure you want to delete this review?")) {
+          this.deleteReview(reviewId);
+        }
+      },
+      async deleteReview(reviewId) {
         try {
-          // Send DELETE request to delete the review by reviewer name
           await axios.delete(`http://localhost:5000/api/Reviews/delete`, {
-            data: { name: this.reviewToDelete.name }
+            data: { review_id: reviewId }, // Send the review ID to delete
           });
           alert('Review deleted successfully!');
-          this.reviewToDelete.name = '';
           this.fetchReviews(); // Refresh the reviews after deletion
         } catch (error) {
           console.error('Error deleting review:', error);
           alert('Failed to delete the review. Please try again.');
         }
-      } else {
-        alert('Please enter a reviewer name before submitting.');
-      }
-    }
+      },
+
   },
   mounted() {
     this.fetchReviews();
@@ -169,55 +163,21 @@ h2 {
   font-style: italic;
 }
 
-/* Delete Review Section */
-.delete-review {
-  margin-top: 60px;
-  padding: 30px;
-  background-color: #333;
-  border-radius: 15px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
+
+/* Delete Review Button */
+.review button {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #dc3545; /* Bootstrap Danger Color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.delete-review h2 {
-  font-size: 1.8rem;
-  margin-bottom: 20px;
-  color: #fff;
-}
-
-.delete-review input {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border: 1px solid #555;
-  border-radius: 5px;
-  font-size: 1rem;
-  background-color: #444;
-  color: #fff;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
-}
-
-.delete-review input::placeholder {
-  color: #888;
-}
-
-.delete-review button {
-  display: block;
-  width: 100%;
-  padding: 15px;
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.delete-review button:hover {
-  background-color: #c82333;
+.review button:hover {
+    background-color: #c82333; /* Darker shade on hover */
 }
 
 /* Responsive */

@@ -16,8 +16,6 @@
                     <p class="rating">★ {{ review.Rating }} / 5</p>
                 </div>
                 <p class="review-text">{{ review.Comment }}</p>
-                <button @click="editReview(review)">Edit Review</button>
-                <button @click="confirmDeleteReview(review.ReviewID)" class="delete-button">Delete Review</button>
             </div>
         </div>
   
@@ -96,31 +94,6 @@
                 alert('Please fill in all fields before submitting.');
             }
         },
-      confirmDeleteReview(reviewId) {
-        if (confirm("Are you sure you want to delete this review?")) {
-          this.deleteReview(reviewId);
-        }
-      },
-      async deleteReview(reviewId) {
-        try {
-          await axios.delete(`http://localhost:5000/api/Reviews/delete`, {
-            data: { review_id: reviewId }, // Send the review ID to delete
-          });
-          alert('Review deleted successfully!');
-          this.fetchReviews(); // Refresh the reviews after deletion
-        } catch (error) {
-          console.error('Error deleting review:', error);
-          alert('Failed to delete the review. Please try again.');
-        }
-      },
-      editReview(review) {
-        this.reviewToEdit = review;
-        this.showEditModal = true; // Show the edit modal
-      },
-      closeEditModal() {
-        this.showEditModal = false;
-        this.fetchReviews(); // Refresh reviews after edit
-      },
     },
     mounted() {
       this.fetchReviews();
@@ -277,21 +250,7 @@ h2 {
     background-color: #218838;
 }
 
-/* Delete Review Button */
-.review button {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #dc3545; /* Bootstrap Danger Color */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
 
-.review button:hover {
-    background-color: #c82333; /* Darker shade on hover */
-}
 
 /* Responsive */
 @media (max-width: 768px) {
