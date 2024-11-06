@@ -102,6 +102,8 @@ export default {
           thumbnail: "/images/thumbnail/roof_gutter_thumb.jpg",
           images: [
             { src: "/images/roof_gutters1.jpg", alt: "Roof & Gutter 1" },
+            { src: "/images/roof_gutters2.jpg", alt: "Roof & Gutter 2" },
+            { src: "/images/roof_gutters3.jpg", alt: "Roof & Gutter 3" },
           ],
         },
       ],

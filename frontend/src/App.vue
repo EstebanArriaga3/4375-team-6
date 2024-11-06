@@ -40,7 +40,6 @@ function toggleMenu() {
       </div>
       <div class="adminnav">
         <RouterLink to="/login" v-if="!user.isLoggedIn">Login</RouterLink>
-        <RouterLink to="/admin" v-if="user.role === 'editor'">Dashboard</RouterLink>
         <RouterLink to="/quoterequest" v-if="user.role === 'editor'">Quote Requests</RouterLink>
         <RouterLink to="/editreview" v-if="user.role === 'editor'">Edit Review</RouterLink>
         <RouterLink to="/editservices" v-if="user.role === 'editor'">Edit Services</RouterLink>
