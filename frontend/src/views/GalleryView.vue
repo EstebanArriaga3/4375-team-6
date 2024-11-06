@@ -69,6 +69,8 @@ export default {
             { src: "/images/lawn2.jpg", alt: "Lawn 2" },
             { src: "/images/lawn3.jpg", alt: "Lawn 3" },
             { src: "/images/lawn4.jpg", alt: "Lawn 4" },
+            { src: "/images/lawn5.jpg", alt: "Lawn 5" },
+            { src: "/images/lawn6.jpg", alt: "Lawn 6" },
           ],
         },
         {
@@ -78,7 +80,9 @@ export default {
             { src: "/images/landscaping1.jpg", alt: "Landscaping 1" },
             { src: "/images/landscaping2.jpg", alt: "Landscaping 2" },
             { src: "/images/landscaping3.jpg", alt: "Landscaping 3" },
-            { src: "/images/landscaping3.jpg", alt: "Landscaping 4" },
+            { src: "/images/landscaping4.jpg", alt: "Landscaping 4" },
+            { src: "/images/landscaping5.jpg", alt: "Landscaping 5" },
+            { src: "/images/landscaping6.jpg", alt: "Landscaping 6" },
           ],
         },
         {
@@ -103,6 +107,9 @@ export default {
             { src: "/images/raised_bed2.jpg", alt: "Raised Bed 2" },
             { src: "/images/raised_bed3.jpg", alt: "Raised Bed 3" },
             { src: "/images/raised_bed4.jpg", alt: "Raised Bed 4" },
+            { src: "/images/raised_bed5.jpg", alt: "Raised Bed 5" },
+            { src: "/images/raised_bed6.jpg", alt: "Raised Bed 6" },
+            { src: "/images/raised_bed7.jpg", alt: "Raised Bed 7" },
           ],
         },
         {
