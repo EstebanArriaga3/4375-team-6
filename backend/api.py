@@ -497,4 +497,27 @@ def dServices():
     conn.commit()
     return 'Service deleted successfully!'
 
+@app.route('/api/Quotes/delete', methods=['DELETE'])
+def dQuotes():
+    try:
+        request_data = request.get_json()
+        if 'quote_id' not in request_data:
+            return jsonify({'error': 'quote_id is required'}), 400
+
+        deleteQuoteID = request_data['quote_id']
+
+        cursor.execute("DELETE FROM TexasLawns.Quotes WHERE quote_id = %s", [deleteQuoteID])
+        affected_rows = cursor.rowcount
+        conn.commit()
+
+        if affected_rows == 0:
+            return jsonify({'message': 'No quote found with the given ID'}), 404
+        
+        return jsonify({'message': 'Quote deleted successfully'}), 200
+
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'error': str(e)}), 500
+
+
 app.run()
