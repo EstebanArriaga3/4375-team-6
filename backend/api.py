@@ -5,9 +5,11 @@ from functools import wraps
 import Credentials
 from SQL import create_connection, execute_read_query, execute_query
 
+
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
-CORS(app)  # Enable CORS for all routes
+CORS(app, origins="http://localhost:5173")  # Explicitly allow requests from Vite frontend
+
 
 # Set up credentials
 creds = Credentials.Creds()
@@ -237,15 +239,15 @@ def aSchedule():
 @app.route('/api/Services/add', methods=['POST'])
 def aServices():
     request_data = request.get_json()
-    addServiceID = request_data['ServiceID']
     addServiceName = request_data['ServiceName']
     addDescription = request_data['Description']
     addPrice = request_data['Price']
 
-    cursor.execute("INSERT INTO TexasLawns.Services (ServiceID, ServiceName, Description, Price) VALUES (%s, %s, %s, %s)",
-                        (addServiceID, addServiceName, addDescription, addPrice))
+    cursor.execute("INSERT INTO TexasLawns.Services (ServiceName, Description, Price) VALUES (%s, %s, %s)",
+                       (addServiceName, addDescription, addPrice))
     conn.commit()
     return 'Service added successfully!'
+
 
 @app.route('/api/Quotes/add', methods=['POST'])
 def add_quote():

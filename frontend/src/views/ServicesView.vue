@@ -1,16 +1,23 @@
 <template>
   <div class="services">
+    <!-- Page Title -->
     <h1>Our Premium Services</h1>
 
+    <!-- Loading and Error Indicators -->
+    <div v-if="isLoading" class="loading">Loading services...</div>
+    <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+
     <!-- Service Cards Section -->
-    <div class="service-cards">
-      <div v-for="service in services" :key="service.title" class="service-card">
-        <h2>{{ service.title }}</h2>
-        <p>{{ service.description }}</p>
+    <div v-if="!isLoading && !errorMessage" class="service-cards">
+      <div v-for="service in services" :key="service.ServiceID" class="service-card">
+        <h2>{{ service.ServiceName }}</h2>
+        <p>{{ service.Description }}</p>
+        <!-- Optionally show price if needed -->
+        <p v-if="service.Price > 0" class="price">Starting at: ${{ service.Price }}</p>
       </div>
     </div>
 
-    <!-- Contact Info Section -->
+    <!-- Contact Information -->
     <footer class="contact-info">
       <h3>Contact Us</h3>
       <div class="contact-details">
@@ -25,23 +32,41 @@
 </template>
 
 <script setup lang="ts">
-const services = [
-  { title: 'Free Estimates', description: 'Get a free estimate for your landscaping needs.' },
-  { title: 'Lawn & Landscaping Maintenance', description: 'Keep your lawn healthy and beautiful year-round.' },
-  { title: 'Raised Bed Installation', description: 'Install elegant raised beds to enhance your garden.' },
-  { title: 'Roof/Gutter Clean-up', description: 'Ensure your roof and gutters stay clear and functional.' },
-  { title: 'Hedge Trimming', description: 'Precise trimming to keep your hedges in shape.' },
-  { title: 'Mulching', description: 'Improve soil health and enhance aesthetics with professional mulching.' },
-  { title: 'Fertilizing', description: 'Optimize lawn growth with our fertilizing services.' },
-  { title: 'Sodding', description: 'Install fresh sod for instant results.' },
-  { title: 'Debris & Weed Removal', description: 'Keep your landscape clean and weed-free.' },
-  { title: 'Firepit Creation', description: 'Add a cozy firepit for outdoor enjoyment.' },
-  { title: 'Fence Installation & Repair', description: 'Install or repair fences to secure your property.' },
-  { title: 'Herbicide Application', description: 'Professional herbicide application for weed control.' },
-  { title: 'Painting', description: 'Quality painting for fences, walls, and exteriors.' },
-  { title: 'Handyman Work', description: 'General handyman services for all your needs.' },
-  { title: 'Advertising', description: 'Promote your business with our advertising services.' },
-];
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
+
+// Define TypeScript interface for a Service
+interface Service {
+  ServiceID: number
+  ServiceName: string
+  Description: string
+  Price: number
+}
+
+// Reactive state variables
+const services = ref<Service[]>([])      // Holds the list of services
+const isLoading = ref(true)              // Loading state indicator
+const errorMessage = ref<string | null>(null)  // Error message
+
+// Fetch services from the backend
+async function fetchServices() {
+  try {
+    const response = await axios.get('http://localhost:5000/api/Services'); // Use 'localhost' to match frontend
+    services.value = response.data;
+    errorMessage.value = null;
+  } catch (error) {
+    errorMessage.value = 'Failed to load services. Please try again later.';
+    console.error('Error fetching services:', error);
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+
+// On component mount, fetch services from the backend
+onMounted(() => {
+  fetchServices()
+})
 </script>
 
 <style scoped>
@@ -64,7 +89,7 @@ const services = [
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Heading */
+/* Page Title */
 h1 {
   font-size: 3rem;
   margin-bottom: 2.5rem;
@@ -74,6 +99,18 @@ h1 {
   border-bottom: 3px solid #4caf50;
   display: inline-block;
   padding-bottom: 10px;
+}
+
+/* Loading and Error States */
+.loading, .error {
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  color: #81c784;
+  text-align: center;
+}
+
+.error {
+  color: #e57373;
 }
 
 /* Service Cards Section */
@@ -116,6 +153,13 @@ h1 {
   color: #ccc;
   line-height: 1.6;
   margin: 0 auto;
+}
+
+/* Price Information */
+.service-card .price {
+  font-size: 1.2rem;
+  color: #ffd700;
+  font-weight: bold;
 }
 
 /* Footer (Contact Section) */
