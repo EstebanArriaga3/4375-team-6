@@ -5,10 +5,10 @@ def create_connection(host_name, user_name, user_password, db_name):
     connection = None
     try:
         connection = mysql.connector.connect(
-            host = host_name,
-            user = user_name,
-            password = user_password,
-            database = db_name
+            host=host_name,
+            user=user_name,
+            password=user_password,
+            database=db_name
         )
         print('Connection to MySQL DB successful')
     except Error as e:
@@ -24,13 +24,20 @@ def execute_query(connection, query):
         print('Query executed successfully')
     except Error as e:
         print(f'The error "{e}" occurred')
+    finally:
+        cursor.close()
 
-def execute_read_query(connection, query):
+def execute_read_query(connection, query, params=None):
     cursor = connection.cursor(dictionary=True)
     result = None
     try:
-        cursor.execute(query)
+        if params:
+            cursor.execute(query, params)  # Execute query with parameters if provided
+        else:
+            cursor.execute(query)  # Execute query without parameters if not provided
         result = cursor.fetchall()
         return result
     except Error as e:
         print(f'The error "{e}" occurred')
+    finally:
+        cursor.close()

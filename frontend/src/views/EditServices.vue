@@ -7,6 +7,15 @@
     <div v-if="isLoading" class="loading">Loading services...</div>
     <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
 
+    <!-- Add New Service Form -->
+    <div class="new-service-form">
+      <h2>Add a New Service</h2>
+      <input v-model="newService.ServiceName" placeholder="Service Name" />
+      <textarea v-model="newService.Description" placeholder="Description"></textarea>
+      <input type="number" v-model="newService.Price" placeholder="Price" min="0" />
+      <button @click="addService">Add Service</button>
+    </div>
+
     <!-- Editable Service Cards Section for Admin -->
     <div v-if="!isLoading && !errorMessage" class="service-cards">
       <div v-for="service in services" :key="service.ServiceID" class="service-card">
@@ -14,8 +23,9 @@
         <textarea v-model="service.Description" placeholder="Description"></textarea>
         <input type="number" v-model="service.Price" placeholder="Price" min="0" />
 
-        <!-- Save button to send updates to the server -->
+        <!-- Save and Delete buttons -->
         <button @click="updateService(service)">Save Changes</button>
+        <button @click="deleteService(service.ServiceID)">Delete</button>
       </div>
     </div>
 
@@ -50,6 +60,13 @@ const services = ref<Service[]>([])      // Holds the list of services
 const isLoading = ref(true)              // Loading state indicator
 const errorMessage = ref<string | null>(null)  // Error message
 
+// New Service data model for form
+const newService = ref({
+  ServiceName: '',
+  Description: '',
+  Price: 0
+})
+
 // Fetch services from the backend
 async function fetchServices() {
   try {
@@ -81,6 +98,48 @@ async function updateService(service: Service) {
   }
 }
 
+// Add a new service
+async function addService() {
+  if (!newService.value.ServiceName || !newService.value.Description) {
+    alert("Please fill in all the fields.")
+    return
+  }
+
+  try {
+    const response = await axios.post('http://localhost:5000/api/Services/add', {
+      ServiceName: newService.value.ServiceName,
+      Description: newService.value.Description,
+      Price: newService.value.Price
+    })
+    alert("Service added successfully!")
+    // Clear the form after adding
+    newService.value = { ServiceName: '', Description: '', Price: 0 }
+    // Refresh the services list to include the new service
+    fetchServices()
+  } catch (error) {
+    console.error("Error adding new service:", error)
+    alert("Failed to add new service. Please try again.")
+  }
+}
+
+// Delete a service
+async function deleteService(serviceID: number) {
+  const confirmation = confirm("Are you sure you want to delete this service?")
+  if (!confirmation) return
+
+  try {
+    await axios.delete(`http://localhost:5000/api/Services/delete`, {
+      data: { ServiceID: serviceID }
+    })
+    alert("Service deleted successfully!")
+    // Refresh the services list after deletion
+    fetchServices()
+  } catch (error) {
+    console.error("Error deleting service:", error)
+    alert("Failed to delete service. Please try again.")
+  }
+}
+
 // On component mount, fetch services from the backend
 onMounted(() => {
   fetchServices()
@@ -99,12 +158,6 @@ onMounted(() => {
   color: #f0f0f0;
   font-family: 'Poppins', sans-serif;
   animation: fadeIn 1s ease-in-out;
-}
-
-/* Fade-in animation for smooth entry */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Page Title */
@@ -129,6 +182,42 @@ h1 {
 
 .error {
   color: #e57373;
+}
+
+/* New Service Form */
+.new-service-form {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: #1a1a1a;
+  border-radius: 15px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.new-service-form input,
+.new-service-form textarea {
+  width: 100%;
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+  border-radius: 5px;
+  border: none;
+  background-color: #333;
+  color: #f0f0f0;
+}
+
+.new-service-form button {
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: #4caf50;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.new-service-form button:hover {
+  background-color: #45a049;
 }
 
 /* Service Cards Section */
@@ -156,7 +245,6 @@ h1 {
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
 }
 
-/* Editable fields */
 .service-card input, .service-card textarea {
   width: 100%;
   margin-bottom: 0.5rem;
