@@ -4,7 +4,7 @@ import { RouterLink, RouterView } from 'vue-router';
 import { useLoggedInUserStore } from './stores/loggedInUser.js'
 
 const showMenu = ref(false);
-const user = useLoggedInUserStore(); 
+const user = useLoggedInUserStore();
 
 function toggleMenu() {
   showMenu.value = !showMenu.value;
@@ -18,33 +18,31 @@ function toggleMenu() {
         <img src="@/assets/logotemp.png" alt="Logo" />
       </div>
 
-      <!-- Hamburger Menu -->
+      <!-- Hamburger Menu for Mobile -->
       <div class="hamburger" @click="toggleMenu">
         &#9776;
       </div>
 
-      <!-- Navigation Menu -->
+      <!-- Main Navigation Menu -->
       <nav :class="{ active: showMenu }">
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/quote">Free Quote</RouterLink>
         <RouterLink to="/services">Services</RouterLink>
         <RouterLink to="/gallery">Gallery</RouterLink>
         <RouterLink to="/review">Reviews</RouterLink>
-
       </nav>
-
     </header>
-    <header class="smallheader">
-      <div>
 
-      </div>
+    <!-- Secondary Navigation for Admin/Editor Links -->
+    <header class="smallheader">
       <div class="adminnav">
         <RouterLink to="/login" v-if="!user.isLoggedIn">Login</RouterLink>
-        <RouterLink to="/quoterequest" v-if="user.role === 'editor'">Quote Requests</RouterLink>
-        <RouterLink to="/editreview" v-if="user.role === 'editor'">Edit Review</RouterLink>
-        <RouterLink to="/editservices" v-if="user.role === 'editor'">Edit Services</RouterLink>
+        <RouterLink to="/admin" v-if="user.isLoggedIn && user.role === 'editor'">Dashboard</RouterLink>
+        <RouterLink to="/quoterequest" v-if="user.isLoggedIn && user.role === 'editor'">Quote Requests</RouterLink>
+        <RouterLink to="/editreview" v-if="user.isLoggedIn && user.role === 'editor'">Edit Review</RouterLink>
+        <RouterLink to="/editservices" v-if="user.isLoggedIn && user.role === 'editor'">Edit Services</RouterLink>
         <RouterLink to="/" v-if="user.isLoggedIn" @click.prevent="user.logout" style="cursor: pointer;">Logout</RouterLink>
-    </div>
+      </div>
     </header>
 
     <main>
@@ -63,15 +61,15 @@ function toggleMenu() {
 </template>
 
 <style scoped>
-/* Align header logo and navigation */
+/* Main header styles */
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  margin-top:25px;
+  margin-top: 25px;
 }
-.smallheader{
+.smallheader {
   display: flex;
   justify-content: right;
   align-items: right;
@@ -80,7 +78,9 @@ header {
   background-color: #272727;
   box-shadow: none;
 }
-.adminnav{
+
+/* Admin nav styling */
+.adminnav {
   display: inline-flex;
   padding: 10px;
 }
@@ -109,7 +109,6 @@ main {
   font-size: 2rem;
   cursor: pointer;
 }
-
 nav.active {
   display: flex !important;
 }
@@ -122,12 +121,12 @@ nav.active {
   margin-top: auto; /* Makes sure footer sticks to the bottom */
 }
 
+/* Footer link styling */
 footer a {
   margin: 0 10px;
   color: var(--color-primary);
   transition: color 0.3s ease;
 }
-
 footer a:hover {
   color: var(--color-primary-light);
 }
@@ -136,7 +135,6 @@ footer a:hover {
   .hamburger {
     display: block;
   }
-
   nav {
     display: none;
     flex-direction: column;
@@ -149,7 +147,6 @@ footer a:hover {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     z-index: 99;
   }
-
   nav a {
     margin-bottom: 10px;
   }

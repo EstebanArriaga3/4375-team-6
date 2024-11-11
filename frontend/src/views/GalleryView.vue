@@ -1,5 +1,5 @@
 <template>
-  <div class="page-wrapper"> <!-- Wrapper to hold entire page -->
+  <div class="page-wrapper">
     <div class="gallery-wrapper">
       <h2 class="gallery-heading">Explore Our Creations</h2>
 
@@ -10,6 +10,8 @@
           v-for="(category, index) in categories"
           :key="index"
           @click="openCarousel(index)"
+          role="button"
+          aria-label="Open {{ category.label }} gallery"
         >
           <img :src="category.thumbnail" :alt="category.label" class="category-thumbnail" />
           <div class="category-label">{{ category.label }}</div>
@@ -19,7 +21,7 @@
       <!-- Image Carousel Modal -->
       <div v-if="showCarousel" class="carousel-modal" @click.self="closeCarousel">
         <div class="carousel">
-          <button class="close-btn" @click="closeCarousel">✖</button>
+          <button class="close-btn" @click="closeCarousel" aria-label="Close gallery">✖</button>
 
           <div class="carousel-wrapper">
             <div
@@ -34,8 +36,8 @@
 
           <!-- Carousel Controls -->
           <div class="carousel-controls">
-            <button class="prev-btn" @click="prevSlide">❮</button>
-            <button class="next-btn" @click="nextSlide">❯</button>
+            <button class="prev-btn" @click="prevSlide" aria-label="Previous image">❮</button>
+            <button class="next-btn" @click="nextSlide" aria-label="Next image">❯</button>
           </div>
 
           <!-- Slide Indicators -->
@@ -45,6 +47,7 @@
               :key="imgIndex"
               @click="goToSlide(imgIndex)"
               :class="{ active: currentIndex === imgIndex }"
+              aria-label="Go to slide {{ imgIndex + 1 }}"
             ></span>
           </div>
         </div>
@@ -149,6 +152,7 @@ export default {
 </script>
 
 <style scoped>
+/* General Layout and Styling */
 .page-wrapper {
   display: flex;
   flex-direction: column;
@@ -186,6 +190,7 @@ export default {
   padding-bottom: 10px;
 }
 
+/* Categories Layout */
 .categories {
   display: flex;
   flex-wrap: wrap;
@@ -229,6 +234,7 @@ export default {
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
 }
 
+/* Carousel Modal */
 .carousel-modal {
   position: fixed;
   top: 0;
@@ -285,6 +291,7 @@ export default {
   background-color: #d32f2f;
 }
 
+/* Carousel Navigation */
 .carousel-item {
   display: none;
   transition: opacity 0.5s ease;
@@ -320,14 +327,15 @@ export default {
   background-color: #555;
 }
 
+/* Carousel Indicators */
 .carousel-indicators {
   position: absolute;
-  bottom: 10px; /* Position the indicators at the bottom */
-  left: 50%; /* Center horizontally */
-  transform: translateX(-50%); /* Adjust to align perfectly in the center */
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   justify-content: center;
-  gap: 10px; /* Add spacing between indicators */
+  gap: 10px;
   margin-top: 15px;
 }
 

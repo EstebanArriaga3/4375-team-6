@@ -8,7 +8,7 @@
     <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
 
     <!-- Add New Service Form -->
-    <div class="new-service-form">
+    <div v-if="isAdmin" class="new-service-form">
       <h2>Add a New Service</h2>
       <input v-model="newService.ServiceName" placeholder="Service Name" />
       <textarea v-model="newService.Description" placeholder="Description"></textarea>
@@ -23,9 +23,9 @@
         <textarea v-model="service.Description" placeholder="Description"></textarea>
         <input type="number" v-model="service.Price" placeholder="Price" min="0" />
 
-        <!-- Save and Delete buttons -->
-        <button @click="updateService(service)">Save Changes</button>
-        <button @click="deleteService(service.ServiceID)">Delete</button>
+        <!-- Save and Delete buttons, only shown if user is admin -->
+        <button v-if="isAdmin" @click="updateService(service)">Save Changes</button>
+        <button v-if="isAdmin" @click="deleteService(service.ServiceID)">Delete</button>
       </div>
     </div>
 
@@ -44,8 +44,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
+import { useLoggedInUserStore } from '../stores/loggedInUser.js'
 
 // Define TypeScript interface for a Service
 interface Service {
@@ -67,11 +68,14 @@ const newService = ref({
   Price: 0
 })
 
+// Access the logged-in user's data from the store
+const userStore = useLoggedInUserStore();
+const isAdmin = computed(() => userStore.role === 'admin'); // Check if the user is an admin
+
 // Fetch services from the backend
 async function fetchServices() {
   try {
     const response = await axios.get('http://localhost:5000/api/Services')
-    console.log("Fetched services data:", response.data) // Log the data to verify structure
     services.value = response.data                   // Set the fetched data to services
     errorMessage.value = null                        // Clear any existing error message
   } catch (error) {
@@ -85,7 +89,7 @@ async function fetchServices() {
 // Update a service in the backend
 async function updateService(service: Service) {
   try {
-    await axios.put(`http://localhost:5000/api/Services/update`, {
+    await axios.put('http://localhost:5000/api/Services/update', {
       ServiceID: service.ServiceID,
       ServiceName: service.ServiceName,
       Description: service.Description,
@@ -106,7 +110,7 @@ async function addService() {
   }
 
   try {
-    const response = await axios.post('http://localhost:5000/api/Services/add', {
+    await axios.post('http://localhost:5000/api/Services/add', {
       ServiceName: newService.value.ServiceName,
       Description: newService.value.Description,
       Price: newService.value.Price
@@ -128,7 +132,7 @@ async function deleteService(serviceID: number) {
   if (!confirmation) return
 
   try {
-    await axios.delete(`http://localhost:5000/api/Services/delete`, {
+    await axios.delete('http://localhost:5000/api/Services/delete', {
       data: { ServiceID: serviceID }
     })
     alert("Service deleted successfully!")

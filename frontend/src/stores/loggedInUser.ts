@@ -24,6 +24,12 @@ export const useLoggedInUserStore = defineStore({
             role: response.data.role,
             isLoggedIn: true,
           });
+          // Store user data in localStorage for persistence
+          localStorage.setItem('user', JSON.stringify({
+            name: username,
+            role: response.data.role,
+            isLoggedIn: true,
+          }));
           router.push("/"); // Redirect to home page or another protected route
         } else {
           throw new Error(response.data.message || "Invalid credentials");
@@ -33,13 +39,38 @@ export const useLoggedInUserStore = defineStore({
         alert(error instanceof Error ? error.message : "Login failed");
       }
     },
-    logout() {
-      this.$patch({
-        name: "",
-        role: "",
-        isLoggedIn: false,
-      });
-      router.push("/"); // Redirect to the home page or login page
+
+    async logout() {
+      try {
+        // Notify the backend to clear session
+        await axios.post("http://localhost:5000/api/logout");
+
+        this.$patch({
+          name: "",
+          role: "",
+          isLoggedIn: false,
+        });
+        
+        // Clear user data from localStorage
+        localStorage.removeItem('user');
+        
+        router.push("/"); // Redirect to the home page or login page
+      } catch (error) {
+        console.error("Logout error:", error);
+      }
     },
+
+    loadUserSession() {
+      // Check local storage for user data on app load
+      const userData = localStorage.getItem('user');
+      if (userData) {
+        const parsedData = JSON.parse(userData);
+        this.$patch({
+          name: parsedData.name,
+          role: parsedData.role,
+          isLoggedIn: parsedData.isLoggedIn,
+        });
+      }
+    }
   },
 });

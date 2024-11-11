@@ -4,37 +4,37 @@
     
     <!-- Display Quotes -->
     <div class="quotes-list">
-      <div v-for="(quote, index) in quotes" :key="index" class="quote-item">
+      <div v-for="quote in quotes" :key="quote.quote_id" class="quote-item">
         <p><strong>Email:</strong> {{ quote.email_address }}</p>
         <p><strong>Project Description:</strong> {{ quote.description }}</p>
+        
+        <!-- Services Section -->
         <div class="services">
           <strong>Services:</strong>
-          <div class="service-checkbox">
-            <input type="checkbox" :checked="quote.fence_gates_service" disabled>
-            <label>Fence & Gates</label>
-          </div>
-          <div class="service-checkbox">
-            <input type="checkbox" :checked="quote.raised_beds_service" disabled>
-            <label>Raised Beds</label>
-          </div>
-          <div class="service-checkbox">
-            <input type="checkbox" :checked="quote.landscaping_service" disabled>
-            <label>Landscaping</label>
-          </div>
-          <div class="service-checkbox">
-            <input type="checkbox" :checked="quote.gutters_roofing_service" disabled>
-            <label>Gutters & Roofing</label>
+          <div v-for="service in servicesList" :key="service.key" class="service-checkbox">
+            <input type="checkbox" :checked="quote[service.key]" disabled />
+            <label>{{ service.label }}</label>
           </div>
         </div>
-        <button @click="deleteQuote(quote.quote_id)" class="delete-btn">Delete Quote</button>
+        
+        <!-- Delete Button -->
+        <button @click="confirmDeleteQuote(quote.quote_id)" class="delete-btn">Delete Quote</button>
       </div>
     </div>
   </div>
 </template>
+
   
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+
+// Define the Quote interface
+interface SomeObjectType {
+  key: string;
+  label: string;
+  name?: string; // Add 'name' if it's supposed to be there
+}
 
 interface Quote {
   quote_id: number;
@@ -44,31 +44,53 @@ interface Quote {
   raised_beds_service: boolean;
   landscaping_service: boolean;
   gutters_roofing_service: boolean;
+  [key: string]: any; // Allow dynamic access, though this is less strict
 }
+
+
+// Define available services for rendering checkboxes dynamically
+const servicesList = [
+  { key: 'fence_gates_service', label: 'Fence & Gates' },
+  { key: 'raised_beds_service', label: 'Raised Beds' },
+  { key: 'landscaping_service', label: 'Landscaping' },
+  { key: 'gutters_roofing_service', label: 'Gutters & Roofing' },
+];
 
 const quotes = ref<Quote[]>([]);
 
+// Fetch quotes from the API
 async function fetchQuotes() {
   try {
     const response = await axios.get<Quote[]>('http://localhost:5000/api/Quotes');
     quotes.value = response.data;
   } catch (error) {
     console.error('Error fetching quotes:', error);
+    alert('Failed to load quotes. Please try again later.');
   }
 }
 
+// Delete confirmation dialog before sending delete request
+function confirmDeleteQuote(quote_id: number) {
+  if (confirm("Are you sure you want to delete this quote?")) {
+    deleteQuote(quote_id);
+  }
+}
+
+// Delete a quote from the server and update the local list
 async function deleteQuote(quote_id: number) {
   try {
     await axios.delete('http://localhost:5000/api/Quotes/delete', {
-      data: { quote_id: quote_id }
+      data: { quote_id: quote_id },
     });
-    // Remove the deleted quote from the local list
-    quotes.value = quotes.value.filter(quote => quote.quote_id !== quote_id);
+    quotes.value = quotes.value.filter(quote => quote.quote_id !== quote_id); // Update quotes list locally
+    alert('Quote deleted successfully!');
   } catch (error) {
     console.error('Error deleting quote:', error);
+    alert('Failed to delete quote. Please try again.');
   }
 }
 
+// Initialize component by fetching quotes
 onMounted(fetchQuotes);
 </script>
   
@@ -159,29 +181,19 @@ h1 {
   }
 }
 
-.services {
-  margin-top: 1rem;
-}
-
-.service-checkbox {
-  display: flex;
-  align-items: center;
-  margin-top: 0.8rem;
-}
-
+/* Checkbox Styling */
 .service-checkbox input[type="checkbox"] {
-  -webkit-appearance: none;
-  -moz-appearance: none;
   appearance: none;
   width: 20px;
   height: 20px;
   border: 2px solid #81c784;
   border-radius: 4px;
   outline: none;
-  transition: all 0.3s ease;
   position: relative;
   cursor: pointer;
   margin-right: 0.8rem;
+  background-color: transparent;
+  transition: background-color 0.3s ease;
 }
 
 .service-checkbox input[type="checkbox"]:checked {

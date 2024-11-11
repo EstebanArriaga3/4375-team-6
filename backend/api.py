@@ -21,19 +21,24 @@ conn = create_connection(creds.address, creds.username, creds.password, creds.db
 cursor = conn.cursor(dictionary=True)
 
 # Authentication function with bcrypt hash check
-
 def authenticate(email, password):
     query = "SELECT PasswordHash, Role FROM OwnerLogin WHERE Email = %s"
     user = execute_read_query(conn, query, (email,))
     
-    if user and user[0]['PasswordHash'] == password:
-        # Return user data instead of True
-        return {'role': user[0]['Role']}
-    return None  # Return None if authentication fails
+    if not user:
+        return None
 
+    stored_hash = user[0]['PasswordHash']
+    if stored_hash.startswith("$2b$") or stored_hash.startswith("$2a$"):
+        if bcrypt.check_password_hash(stored_hash, password):
+            return {'role': user[0]['Role']}
+    else:
+        if stored_hash == password:
+            return {'role': user[0]['Role']}
+    
+    return None  # Authentication failed
 
-
-# Decorator for routes that require authentication
+# Decorator for routes that require login
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -42,7 +47,16 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-# Login route for authentication
+# Decorator for routes that require admin privileges
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'logged_in' not in session or not session['logged_in'] or session.get('role') != 'admin':
+            return jsonify({'message': 'Admin access required'}), 403
+        return f(*args, **kwargs)
+    return decorated_function
+
+# Login route
 @app.route('/api/login', methods=['POST'])
 @cross_origin(origin='http://localhost:5173', supports_credentials=True)
 def login():
@@ -51,15 +65,21 @@ def login():
     password = data.get('password')
     
     user = authenticate(email, password)
-    if user:  # If user is not None, authentication was successful
+    if user:
         session['logged_in'] = True
         session['username'] = email
-        session['role'] = user['role']  # Store the user's role in the session
+        session['role'] = user['role']
         return jsonify({'success': True, 'role': user['role']}), 200
     else:
         return jsonify({'success': False, 'message': 'Invalid credentials'}), 401
 
-# View all data routes (GET requests for all tables)
+# Logout route
+@app.route('/api/logout', methods=['POST'])
+def logout():
+    session.clear()
+    return jsonify({'success': True, 'message': 'Logged out successfully'}), 200
+
+# Data retrieval (GET) routes
 @app.route('/api/AppointmentDetails', methods=['GET'])
 def vAppointmentDetails():
     return jsonify(execute_read_query(conn, 'SELECT * FROM AppointmentDetails'))
@@ -99,8 +119,9 @@ def vServices():
 def vQuotes():
     return jsonify(execute_read_query(conn, 'SELECT * FROM Quotes'))
 
-# Add routes (POST requests for inserting new entries)
+# Add (POST) routes with admin_required decorator
 @app.route('/api/AppointmentDetails/add', methods=['POST'])
+@admin_required
 def aAppointmentDetails():
     data = request.get_json()
     query = """
@@ -111,6 +132,7 @@ def aAppointmentDetails():
     return jsonify({'message': 'Appointment Details added successfully!'})
 
 @app.route('/api/Appointments/add', methods=['POST'])
+@admin_required
 def aAppointments():
     data = request.get_json()
     query = """
@@ -121,6 +143,7 @@ def aAppointments():
     return jsonify({'message': 'Appointment added successfully!'})
 
 @app.route('/api/Customers/add', methods=['POST'])
+@admin_required
 def aCustomers():
     data = request.get_json()
     query = """
@@ -130,31 +153,74 @@ def aCustomers():
     execute_query(conn, query, (data['CustomerID'], data['FirstName'], data['LastName'], data['Email'], data['Address']))
     return jsonify({'message': 'Customer added successfully!'})
 
-# Update routes (PUT requests for modifying existing entries)
-@app.route('/api/AppointmentDetails/update', methods=['PUT'])
-def uAppointmentDetails():
+@app.route('/api/Reviews/add', methods=['POST'])
+@admin_required
+def add_review():
     data = request.get_json()
     query = """
-    UPDATE AppointmentDetails
-    SET AppID = %s, ServiceID = %s, SubTotal = %s
-    WHERE AppDetailID = %s
+    INSERT INTO Reviews (ServiceID, Rating, Comment, ReviewDate, CustomerName)
+    VALUES (%s, %s, %s, %s, %s)
     """
-    execute_query(conn, query, (data['AppID'], data['ServiceID'], data['SubTotal'], data['AppDetailID']))
-    return jsonify({'message': 'Appointment Details updated successfully!'})
+    execute_query(conn, query, (data['ServiceID'], data['Rating'], data['Comment'], data['ReviewDate'], data['CustomerName']))
+    return jsonify({'message': 'Review added successfully!'}), 201
 
-@app.route('/api/Appointments/update', methods=['PUT'])
-def uAppointments():
+@app.route('/api/Quotes/add', methods=['POST'])
+@admin_required
+def add_quote():
     data = request.get_json()
     query = """
-    UPDATE Appointments
-    SET CustomerID = %s, AppDetailID = %s
-    WHERE AppID = %s
+    INSERT INTO Quotes (email_address, description, fence_gates_service, raised_beds_service, landscaping_service, gutters_roofing_service)
+    VALUES (%s, %s, %s, %s, %s, %s)
     """
-    execute_query(conn, query, (data['CustomerID'], data['AppDetailID'], data['AppID']))
-    return jsonify({'message': 'Appointment updated successfully!'})
+    execute_query(conn, query, (data['email_address'], data['description'], data['fence_gates_service'], data['raised_beds_service'], data['landscaping_service'], data['gutters_roofing_service']))
+    return jsonify({'message': 'Quote added successfully!'}), 201
 
-# Delete routes (DELETE requests for removing records)
+# Update (PUT) routes with admin_required decorator
+@app.route('/api/Reviews/update', methods=['PUT'])
+@admin_required
+def update_review():
+    data = request.get_json()
+    query = """
+    UPDATE Reviews
+    SET ServiceID = %s, Rating = %s, Comment = %s, ReviewDate = %s
+    WHERE ReviewID = %s
+    """
+    execute_query(conn, query, (data['ServiceID'], data['Rating'], data['Comment'], data['ReviewDate'], data['ReviewID']))
+    return jsonify({'message': 'Review updated successfully!'})
+
+@app.route('/api/Quotes/update', methods=['PUT'])
+@admin_required
+def update_quote():
+    data = request.get_json()
+    query = """
+    UPDATE Quotes
+    SET email_address = %s, description = %s, fence_gates_service = %s,
+        raised_beds_service = %s, landscaping_service = %s, gutters_roofing_service = %s
+    WHERE quote_id = %s
+    """
+    execute_query(conn, query, (data['email_address'], data['description'], data['fence_gates_service'],
+                                data['raised_beds_service'], data['landscaping_service'], data['gutters_roofing_service'], data['quote_id']))
+    return jsonify({'message': 'Quote updated successfully!'})
+
+# Delete (DELETE) routes with admin_required decorator
+@app.route('/api/Reviews/delete', methods=['DELETE'])
+@admin_required
+def delete_review():
+    data = request.get_json()
+    query = "DELETE FROM Reviews WHERE ReviewID = %s"
+    execute_query(conn, query, (data['ReviewID'],))
+    return jsonify({'message': 'Review deleted successfully!'})
+
+@app.route('/api/Quotes/delete', methods=['DELETE'])
+@admin_required
+def delete_quote():
+    data = request.get_json()
+    query = "DELETE FROM Quotes WHERE quote_id = %s"
+    execute_query(conn, query, (data['quote_id'],))
+    return jsonify({'message': 'Quote deleted successfully!'})
+
 @app.route('/api/AppointmentDetails/delete', methods=['DELETE'])
+@admin_required
 def dAppointmentDetails():
     data = request.get_json()
     query = "DELETE FROM AppointmentDetails WHERE AppDetailID = %s"
@@ -162,6 +228,7 @@ def dAppointmentDetails():
     return jsonify({'message': 'Appointment Details deleted successfully!'})
 
 @app.route('/api/Appointments/delete', methods=['DELETE'])
+@admin_required
 def dAppointments():
     data = request.get_json()
     query = "DELETE FROM Appointments WHERE AppID = %s"

@@ -1,9 +1,9 @@
 // src/router/index.ts
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
-import { useLoggedInUserStore } from '../stores/loggedInUser'; //
+import { useLoggedInUserStore } from '../stores/loggedInUser'; // Import the store to access logged-in user details
 
-// Define routes
+// Define routes with role-based access control
 const routes = [
   {
     path: '/',
@@ -44,19 +44,19 @@ const routes = [
     path: '/quoterequest',
     name: 'quoterequest',
     component: () => import('../views/QuoteRequests.vue'),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, role: 'admin' }, // Restricted to users with 'admin' role
   },
   {
     path: '/editreview',
     name: 'editreview',
     component: () => import('../views/EditReview.vue'),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, role: 'admin' }, // Restricted to 'admin' role
   },
   {
     path: '/editservices',
     name: 'editservices',
     component: () => import('../views/EditServices.vue'),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, role: 'admin' }, // Restricted to 'admin' role
   },
 ];
 
@@ -68,15 +68,22 @@ const router = createRouter({
 
 // Navigation guard for protected routes
 router.beforeEach((to, from, next) => {
-  const store = useLoggedInUserStore();
+  const store = useLoggedInUserStore(); // Access the user store
 
+  // Check if the route requires authentication
   if (to.meta.requiresAuth && !store.isLoggedIn) {
     // Redirect to login page if not authenticated and trying to access a protected route
     next({
       path: '/login',
       query: { redirect: to.fullPath },
     });
+  } else if (to.meta.role && store.role !== to.meta.role) {
+    // Check if the user has the required role for the route
+    // Redirect to the home page if the user does not have the appropriate role
+    alert("You don't have access to this page.");
+    next('/');
   } else {
+    // Allow access to the route
     next();
   }
 });
