@@ -24,19 +24,24 @@ cursor = conn.cursor(dictionary=True)
 def authenticate(email, password):
     query = "SELECT PasswordHash, Role FROM OwnerLogin WHERE Email = %s"
     user = execute_read_query(conn, query, (email,))
-    
+    print("User fetched:", user)  # Debugging line to see what user data is fetched
+
     if not user:
         return None
 
     stored_hash = user[0]['PasswordHash']
+    print("Stored Hash:", stored_hash)  # See the hash or password stored
+
+    # Check if the password is hashed or plain
     if stored_hash.startswith("$2b$") or stored_hash.startswith("$2a$"):
         if bcrypt.check_password_hash(stored_hash, password):
             return {'role': user[0]['Role']}
     else:
         if stored_hash == password:
             return {'role': user[0]['Role']}
-    
+
     return None  # Authentication failed
+  # Authentication failed
 
 # Decorator for routes that require login
 def login_required(f):
