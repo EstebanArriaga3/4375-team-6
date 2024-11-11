@@ -120,6 +120,7 @@ def vSchedule():
 def vServices():
     return jsonify(execute_read_query(conn, 'SELECT * FROM Services'))
 
+
 @app.route('/api/Quotes', methods=['GET'])
 def vQuotes():
     return jsonify(execute_read_query(conn, 'SELECT * FROM Quotes'))
