@@ -10,37 +10,47 @@
         </p>
       </div>
   
-      <!-- Reviews Section -->
+      <!-- Customer Reviews Section -->
       <div class="reviews-container">
         <div class="review" v-for="review in reviews" :key="review.ReviewID">
           <div class="review-header">
-            <h2>{{ review.CustomerName }}</h2>
+            <h2>{{ review.CustomerName || 'Anonymous' }}</h2>
             <p class="rating">★ {{ review.Rating }} / 5</p>
           </div>
           <p class="review-text">{{ review.Comment }}</p>
-          <button @click="editReview(review)">Edit Review</button>
-          <button @click="confirmDeleteReview(review.ReviewID)" class="delete-button">
-            Delete Review
-          </button>
+  
+          <!-- Admin Controls: Edit and Delete -->
+          <div v-if="isAdmin">
+            <button @click="editReview(review)" class="edit-button">Edit Review</button>
+            <button @click="confirmDeleteReview(review.ReviewID)" class="delete-button">Delete Review</button>
+          </div>
         </div>
       </div>
   
-      <!-- Edit Modal Component -->
-      <EditReview
-        v-if="showEditModal"
-        :review="reviewToEdit"
-        @close="closeEditModal"
-      />
+      <!-- Edit Review Modal (Admin Only) -->
+      <div v-if="showEditModal" class="modal">
+        <div class="modal-content">
+          <h2>Edit Review</h2>
+          <input type="text" v-model="reviewToEdit.CustomerName" placeholder="Your Name" />
+          <textarea v-model="reviewToEdit.Comment" placeholder="Your Review" rows="5"></textarea>
+          <select v-model="reviewToEdit.Rating">
+            <option disabled value="">Rating</option>
+            <option value="5">5 - Excellent</option>
+            <option value="4">4 - Good</option>
+            <option value="3">3 - Average</option>
+            <option value="2">2 - Below Average</option>
+            <option value="1">1 - Poor</option>
+          </select>
+          <button @click="updateReview">Update Review</button>
+          <button @click="closeEditModal">Cancel</button>
+        </div>
+      </div>
   
-      <!-- Leave a Review Section -->
+      <!-- Leave a Review Section (For All Users) -->
       <div class="leave-review">
         <h2>Leave Your Review</h2>
         <input type="text" v-model="newReview.name" placeholder="Your Name" />
-        <textarea
-          v-model="newReview.Comment"
-          placeholder="Your Review"
-          rows="5"
-        ></textarea>
+        <textarea v-model="newReview.Comment" placeholder="Your Review" rows="5"></textarea>
         <select v-model="newReview.Rating">
           <option disabled value="">Rating</option>
           <option value="5">5 - Excellent</option>
@@ -56,52 +66,52 @@
   
   <script>
   import axios from 'axios';
-  import EditReview from '../views/EditReview.vue'; // Ensure this path is correct
+  import { useLoggedInUserStore } from '../stores/loggedInUser';
   
   export default {
-    components: {
-      EditReview,
-    },
     data() {
       return {
         reviews: [],
         showEditModal: false,
         reviewToEdit: null,
         newReview: {
-          name: '', // Holds the name of the reviewer
+          name: '',
           Comment: '',
           Rating: '',
-          ReviewDate: new Date().toISOString().slice(0, 10), // Current date
-          ServiceID: 1, // Default ServiceID, adjust as needed
+          ReviewDate: new Date().toISOString().slice(0, 10),
+          ServiceID: 1,
         },
       };
     },
+    computed: {
+      user() {
+        const userStore = useLoggedInUserStore();
+        console.log("User data in computed:", userStore);
+        return userStore;
+      },
+      isAdmin() {
+        return this.user.role === 'admin';
+      },
+    },
     methods: {
-      // Fetch reviews from the API
       async fetchReviews() {
         try {
           const response = await axios.get('http://localhost:5000/api/Reviews');
-          this.reviews = response.data.map((review) => ({
+          this.reviews = response.data.map(review => ({
             ...review,
-            CustomerName: review.name || 'Anonymous',
+            CustomerName: review.CustomerName || 'Anonymous',
           }));
         } catch (error) {
           console.error('Error fetching reviews:', error);
         }
       },
-  
-      // Submit a new review to the API
       async submitReview() {
         if (this.newReview.name && this.newReview.Comment && this.newReview.Rating) {
           try {
-            // Set additional data before submitting
-            this.newReview.ReviewDate = new Date().toISOString().slice(0, 10);
-            this.newReview.ServiceID = 1; // Adjust as needed
-  
             await axios.post('http://localhost:5000/api/Reviews/add', this.newReview);
             alert('Review submitted successfully!');
             this.newReview = { name: '', Comment: '', Rating: '', ReviewDate: '', ServiceID: 1 };
-            this.fetchReviews(); // Refresh reviews
+            this.fetchReviews();
           } catch (error) {
             console.error('Error submitting review:', error);
             alert('Failed to submit the review. Please try again.');
@@ -110,38 +120,39 @@
           alert('Please fill in all fields before submitting.');
         }
       },
-  
-      // Confirm deletion of a review
       confirmDeleteReview(reviewId) {
         if (confirm('Are you sure you want to delete this review?')) {
           this.deleteReview(reviewId);
         }
       },
-  
-      // Delete a review from the API
       async deleteReview(reviewId) {
         try {
-          await axios.delete('http://localhost:5000/api/Reviews/delete', {
-            data: { review_id: reviewId },
-          });
+          await axios.delete('http://localhost:5000/api/Reviews/delete', { data: { review_id: reviewId } });
           alert('Review deleted successfully!');
-          this.fetchReviews(); // Refresh reviews after deletion
+          this.fetchReviews();
         } catch (error) {
           console.error('Error deleting review:', error);
           alert('Failed to delete the review. Please try again.');
         }
       },
-  
-      // Edit a review (open modal)
       editReview(review) {
-        this.reviewToEdit = review;
+        this.reviewToEdit = { ...review };
         this.showEditModal = true;
       },
-  
-      // Close the edit modal
+      async updateReview() {
+        try {
+          await axios.put(`http://localhost:5000/api/Reviews/update`, this.reviewToEdit);
+          alert('Review updated successfully!');
+          this.closeEditModal();
+          this.fetchReviews();
+        } catch (error) {
+          console.error('Error updating review:', error);
+          alert('Failed to update the review. Please try again.');
+        }
+      },
       closeEditModal() {
         this.showEditModal = false;
-        this.fetchReviews(); // Refresh reviews after edit
+        this.reviewToEdit = null;
       },
     },
     mounted() {

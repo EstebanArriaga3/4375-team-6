@@ -1,95 +1,76 @@
+// Brandons version of edit review
 <template>
   <div class="reviews-page">
-    <h1>Customer Reviews</h1>
+      <h1>Customer Reviews</h1>
 
-    <!-- Description Section -->
-    <div class="description">
-      <p>
-        Welcome to our landscaping company! We take pride in transforming
-        outdoor spaces into beautiful, functional environments. Check out what
-        our customers are saying about our services.
-      </p>
-    </div>
-
-    <!-- Customer Reviews Section -->
-    <div class="reviews-container">
-      <div class="review" v-for="review in reviews" :key="review.ReviewID">
-        <div class="review-header">
-          <h2>{{ review.CustomerName || 'Anonymous' }}</h2>
-          <p class="rating">★ {{ review.Rating }} / 5</p>
-        </div>
-        <p class="review-text">{{ review.Comment }}</p>
-        
-        <!-- Only display delete button if user is an admin -->
-        <button 
-          v-if="user.role === 'admin'" 
-          @click="confirmDeleteReview(review.ReviewID)" 
-          class="delete-button"
-        >
-          Delete Review
-        </button>
+      <!-- Description Section -->
+      <div class="description">
+          <p>
+              Welcome to our landscaping company! We take pride in transforming outdoor spaces into beautiful, 
+              functional environments. Check out what our customers are saying about our services.
+          </p>
       </div>
-    </div>
+
+      <!-- Customer Reviews Section -->
+      <div class="reviews-container">
+          <div class="review" v-for="review in reviews" :key="review.ReviewID">
+              <div class="review-header">
+                  <h2>{{ review.CustomerName }}</h2>
+                  <p class="rating">★ {{ review.Rating }} / 5</p>
+              </div>
+              <p class="review-text">{{ review.Comment }}</p>
+              <button @click="confirmDeleteReview(review.ReviewID)" class="delete-button">Delete Review</button>
+          </div>
+      </div>
+
+
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import { useLoggedInUserStore } from '../stores/loggedInUser';
 
 export default {
   data() {
     return {
-      reviews: [], // Stores all reviews fetched from the backend
+      reviews: [],
+
     };
   },
-  computed: {
-    user() {
-      // Access the logged-in user's data from the store
-      return useLoggedInUserStore();
-    },
-  },
   methods: {
-    // Fetch all reviews from the backend
     async fetchReviews() {
       try {
         const response = await axios.get('http://localhost:5000/api/Reviews');
-        // Map response data to include default CustomerName if missing
         this.reviews = response.data.map(review => ({
           ...review,
-          CustomerName: review.CustomerName || 'Anonymous',
+          CustomerName: review.name || 'Anonymous'
         }));
       } catch (error) {
         console.error('Error fetching reviews:', error);
-        alert('Failed to load reviews. Please try again later.');
       }
     },
-    
-    // Confirm with the user before deletion
     confirmDeleteReview(reviewId) {
-      if (confirm("Are you sure you want to delete this review?")) {
-        this.deleteReview(reviewId);
-      }
-    },
-    
-    // Delete a review by ID
-    async deleteReview(reviewId) {
-      try {
-        await axios.delete('http://localhost:5000/api/Reviews/delete', {
-          data: { review_id: reviewId }, // Send review ID in the request body
-        });
-        alert('Review deleted successfully!');
-        this.fetchReviews(); // Refresh reviews after deletion
-      } catch (error) {
-        console.error('Error deleting review:', error);
-        alert('Failed to delete the review. Please try again.');
-      }
-    },
+        if (confirm("Are you sure you want to delete this review?")) {
+          this.deleteReview(reviewId);
+        }
+      },
+      async deleteReview(reviewId) {
+        try {
+          await axios.delete(`http://localhost:5000/api/Reviews/delete`, {
+            data: { review_id: reviewId }, // Send the review ID to delete
+          });
+          alert('Review deleted successfully!');
+          this.fetchReviews(); // Refresh the reviews after deletion
+        } catch (error) {
+          console.error('Error deleting review:', error);
+          alert('Failed to delete the review. Please try again.');
+        }
+      },
+
   },
   mounted() {
-    // Fetch reviews on component mount
     this.fetchReviews();
-  },
+  }
 };
 </script>
 
@@ -182,34 +163,36 @@ h2 {
   font-style: italic;
 }
 
+
 /* Delete Review Button */
-.delete-button {
-  margin-top: 10px;
-  padding: 10px;
-  background-color: #dc3545; /* Bootstrap Danger Color */
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.review button {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #dc3545; /* Bootstrap Danger Color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.delete-button:hover {
-  background-color: #c82333; /* Darker shade on hover */
+.review button:hover {
+    background-color: #c82333; /* Darker shade on hover */
 }
 
 /* Responsive */
 @media (max-width: 768px) {
+  .delete-review,
   .description {
-    padding: 20px;
+      padding: 20px;
   }
 
   .reviews-container {
-    grid-template-columns: 1fr;
+      grid-template-columns: 1fr;
   }
 
   h1 {
-    font-size: 2.5rem;
+      font-size: 2.5rem;
   }
 }
 </style>

@@ -1,10 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
-import { useLoggedInUserStore } from './stores/loggedInUser.js'
+import { useLoggedInUserStore } from './stores/loggedInUser.js';
 
 const showMenu = ref(false);
 const user = useLoggedInUserStore();
+
+// Load user session on app startup
+onMounted(() => {
+  user.loadUserSession();
+  console.log("User session loaded:", user); // Debugging log
+});
 
 function toggleMenu() {
   showMenu.value = !showMenu.value;

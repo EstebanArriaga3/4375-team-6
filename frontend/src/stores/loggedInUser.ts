@@ -42,7 +42,6 @@ export const useLoggedInUserStore = defineStore({
 
     async logout() {
       try {
-        // Notify the backend to clear session
         await axios.post("http://localhost:5000/api/logout");
 
         this.$patch({
@@ -51,7 +50,6 @@ export const useLoggedInUserStore = defineStore({
           isLoggedIn: false,
         });
         
-        // Clear user data from localStorage
         localStorage.removeItem('user');
         
         router.push("/"); // Redirect to the home page or login page
@@ -61,7 +59,6 @@ export const useLoggedInUserStore = defineStore({
     },
 
     loadUserSession() {
-      // Check local storage for user data on app load
       const userData = localStorage.getItem('user');
       if (userData) {
         const parsedData = JSON.parse(userData);
