@@ -183,6 +183,18 @@ def add_quote():
     execute_query(conn, query, (data['email_address'], data['description'], data['fence_gates_service'], data['raised_beds_service'], data['landscaping_service'], data['gutters_roofing_service']))
     return jsonify({'message': 'Quote added successfully!'}), 201
 
+@app.route('/api/Services/add', methods=['POST'])
+@admin_required
+def add_services():
+    request_data = request.get_json()
+    addServiceName = request_data['ServiceName']
+    addDescription = request_data['Description']
+    addPrice = request_data['Price']
+    cursor.execute("INSERT INTO TexasLawns.Services (ServiceName, Description, Price) VALUES (%s, %s, %s)",
+                       (addServiceName, addDescription, addPrice))
+    conn.commit()
+    return jsonify({'message': 'Services added successfully!'}), 201
+
 # Update (PUT) routes with admin_required decorator
 @app.route('/api/Reviews/update', methods=['PUT'])
 @admin_required
@@ -209,6 +221,19 @@ def update_quote():
     execute_query(conn, query, (data['email_address'], data['description'], data['fence_gates_service'],
                                 data['raised_beds_service'], data['landscaping_service'], data['gutters_roofing_service'], data['quote_id']))
     return jsonify({'message': 'Quote updated successfully!'})
+
+@app.route('/api/Services/update', methods=['PUT'])
+@admin_required
+def update_services():
+    request_data = request.get_json()
+    updateServiceID = request_data['ServiceID']
+    updateServiceName = request_data['ServiceName']
+    updateDescription = request_data['Description']
+    updatePrice = request_data['Price']
+    cursor.execute("UPDATE TexasLawns.Services SET ServiceName = %s, Description = %s, Price = %s WHERE ServiceID = %s", 
+                   (updateServiceName, updateDescription, updatePrice, updateServiceID))
+    conn.commit()
+    return jsonify({'message': 'Services updated successfully!'})
 
 # Delete (DELETE) routes with admin_required decorator
 @app.route('/api/Reviews/delete', methods=['DELETE'])
@@ -242,6 +267,15 @@ def dAppointments():
     query = "DELETE FROM Appointments WHERE AppID = %s"
     execute_query(conn, query, (data['AppID'],))
     return jsonify({'message': 'Appointment deleted successfully!'})
+
+@app.route('/api/Services/delete', methods=['DELETE'])
+@admin_required
+def dServices():
+    request_data = request.get_json()
+    deleteServiceID = request_data['ServiceID']
+    cursor.execute("DELETE FROM TexasLawns.Services WHERE ServiceID = %s", [deleteServiceID])
+    conn.commit()
+    return jsonify({'message': 'Service deleted successfully!'})
 
 # Run the app
 if __name__ == '__main__':
