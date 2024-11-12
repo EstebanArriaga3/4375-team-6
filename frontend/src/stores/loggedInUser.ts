@@ -3,6 +3,8 @@ import { defineStore } from 'pinia';
 import axios from 'axios';
 import router from '../router';
 
+axios.defaults.withCredentials = true;
+
 export const useLoggedInUserStore = defineStore({
   id: 'loggedInUser',
   state: () => ({
@@ -16,7 +18,11 @@ export const useLoggedInUserStore = defineStore({
         const response = await axios.post("http://localhost:5000/api/login", {
           username,
           password,
-        });
+        },
+        {
+          withCredentials: true
+        }
+      );
 
         if (response.data.success) {
           this.$patch({

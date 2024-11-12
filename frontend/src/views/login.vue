@@ -41,10 +41,13 @@ const store = useLoggedInUserStore();
 
 const login = async () => {
   try {
-    const response = await axios.post('http://localhost:5000/api/login', {
+    const response = await axios.post('http://localhost:5000/api/login', 
+    {
       username: username.value,
       password: password.value,
-    });
+    },
+    { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
+  );
 
     if (response.data.success) {
       store.login(username.value, response.data.role);
