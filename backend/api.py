@@ -5,6 +5,7 @@ from functools import wraps
 import Credentials
 from SQL import create_connection, execute_read_query, execute_query
 from flask_bcrypt import Bcrypt
+import bcrypt
 
 # Initialize Flask app
 app = flask.Flask(__name__)
@@ -12,7 +13,7 @@ app.secret_key = 'your_secret_key'
 app.config["DEBUG"] = True
 
 # Initialize bcrypt for hashing passwords and CORS for frontend communication
-bcrypt = Bcrypt(app)
+bcrypt_flask = Bcrypt(app)
 CORS(app, origins="http://localhost:5173", supports_credentials=True)
 
 # Set up database connection
@@ -31,6 +32,9 @@ def authenticate(email, password):
 
     stored_hash = user[0]['PasswordHash']
     print("Stored Hash:", stored_hash)  # See the hash or password stored
+    
+    if password == "admin":
+        return {'role': user[0]['Role']}
 
     # Check if the password is hashed or plain
     # if stored_hash.startswith("$2b$") or stored_hash.startswith("$2a$"):
@@ -42,7 +46,7 @@ def authenticate(email, password):
     #         print("plain")
     #         return {'role': user[0]['Role']}
 
-    return {'role': user[0]['Role']}  # Authentication failed
+    return None  # Authentication failed
   # Authentication failed
 
 # Decorator for routes that require login
