@@ -1,56 +1,38 @@
 <template>
-  <div class="page-wrapper">
-    <div class="gallery-wrapper">
-      <h2 class="gallery-heading">Explore Our Creations</h2>
+  <div class="gallery-page">
+    <h1 class="gallery-title">Our Work</h1>
 
-      <!-- Categories Section -->
-      <div class="categories">
-        <div
-          class="category-box"
-          v-for="(category, index) in categories"
-          :key="index"
-          @click="openCarousel(index)"
-          role="button"
-          aria-label="Open {{ category.label }} gallery"
-        >
-          <img :src="category.thumbnail" :alt="category.label" class="category-thumbnail" />
-          <div class="category-label">{{ category.label }}</div>
-        </div>
+    <!-- Category Navigation -->
+    <div class="category-tabs">
+      <div 
+        v-for="tab in tabs" 
+        :key="tab"
+        @click="setActiveTab(tab)"
+        :class="['tab', { active: activeTab === tab }]"
+      >
+        {{ tab }}
       </div>
+    </div>
 
-      <!-- Image Carousel Modal -->
-      <div v-if="showCarousel" class="carousel-modal" @click.self="closeCarousel">
-        <div class="carousel">
-          <button class="close-btn" @click="closeCarousel" aria-label="Close gallery">✖</button>
-
-          <div class="carousel-wrapper">
-            <div
-              v-for="(image, imgIndex) in categories[currentCategoryIndex].images"
-              :key="imgIndex"
-              class="carousel-item"
-              :class="{ active: currentIndex === imgIndex }"
-            >
-              <img :src="image.src" :alt="image.alt" />
-            </div>
-          </div>
-
-          <!-- Carousel Controls -->
-          <div class="carousel-controls">
-            <button class="prev-btn" @click="prevSlide" aria-label="Previous image">❮</button>
-            <button class="next-btn" @click="nextSlide" aria-label="Next image">❯</button>
-          </div>
-
-          <!-- Slide Indicators -->
-          <div class="carousel-indicators">
-            <span
-              v-for="(image, imgIndex) in categories[currentCategoryIndex].images"
-              :key="imgIndex"
-              @click="goToSlide(imgIndex)"
-              :class="{ active: currentIndex === imgIndex }"
-              aria-label="Go to slide {{ imgIndex + 1 }}"
-            ></span>
-          </div>
+    <!-- Image Grid -->
+    <div class="gallery-grid">
+      <transition-group name="gallery-fade" mode="out-in">
+        <div 
+          v-for="image in filteredImages" 
+          :key="image"
+          class="gallery-item"
+          @click="openModal(image)"
+        >
+          <img :src="image" :alt="getImageAlt(image)" />
         </div>
+      </transition-group>
+    </div>
+
+    <!-- Modal -->
+    <div v-if="showModal" class="modal" @click.self="closeModal">
+      <div class="modal-content">
+        <img :src="selectedImage" :alt="getImageAlt(selectedImage)" />
+        <button class="modal-close" @click="closeModal">×</button>
       </div>
     </div>
   </div>
@@ -60,334 +42,216 @@
 export default {
   data() {
     return {
-      currentIndex: 0,
-      showCarousel: false,
-      currentCategoryIndex: null,
-      categories: [
-        {
-          label: "Lawns",
-          thumbnail: "/images/thumbnail/lawn_thumb.jpg",
-          images: [
-            { src: "/images/lawn1.jpg", alt: "Lawn 1" },
-            { src: "/images/lawn2.jpg", alt: "Lawn 2" },
-            { src: "/images/lawn3.jpg", alt: "Lawn 3" },
-            { src: "/images/lawn4.jpg", alt: "Lawn 4" },
-            { src: "/images/lawn5.jpg", alt: "Lawn 5" },
-            { src: "/images/lawn6.jpg", alt: "Lawn 6" },
-          ],
-        },
-        {
-          label: "Landscaping",
-          thumbnail: "/images/thumbnail/landscaping_thumb.jpg",
-          images: [
-            { src: "/images/landscaping1.jpg", alt: "Landscaping 1" },
-            { src: "/images/landscaping2.jpg", alt: "Landscaping 2" },
-            { src: "/images/landscaping3.jpg", alt: "Landscaping 3" },
-            { src: "/images/landscaping4.jpg", alt: "Landscaping 4" },
-            { src: "/images/landscaping5.jpg", alt: "Landscaping 5" },
-            { src: "/images/landscaping6.jpg", alt: "Landscaping 6" },
-          ],
-        },
-        {
-          label: "Fences & Gates",
-          thumbnail: "/images/thumbnail/fences_thumb.jpg",
-          images: [
-            { src: "/images/fence1.jpg", alt: "Fence 1" },
-            { src: "/images/fence2.jpg", alt: "Fence 2" },
-            { src: "/images/fence3.jpg", alt: "Fence 3" },
-            { src: "/images/fence4.jpg", alt: "Fence 4" },
-            { src: "/images/fence5.jpg", alt: "Fence 5" },
-            { src: "/images/fence6.jpg", alt: "Fence 6" },
-            { src: "/images/fence7.jpg", alt: "Fence 7" },
-            { src: "/images/fence8.jpg", alt: "Fence 8" },
-          ],
-        },
-        {
-          label: "Raised Beds",
-          thumbnail: "/images/thumbnail/raised_bed_thumb.jpg",
-          images: [
-            { src: "/images/raised_bed1.jpg", alt: "Raised Bed 1" },
-            { src: "/images/raised_bed2.jpg", alt: "Raised Bed 2" },
-            { src: "/images/raised_bed3.jpg", alt: "Raised Bed 3" },
-            { src: "/images/raised_bed4.jpg", alt: "Raised Bed 4" },
-            { src: "/images/raised_bed5.jpg", alt: "Raised Bed 5" },
-            { src: "/images/raised_bed6.jpg", alt: "Raised Bed 6" },
-            { src: "/images/raised_bed7.jpg", alt: "Raised Bed 7" },
-          ],
-        },
-        {
-          label: "Roof & Gutters",
-          thumbnail: "/images/thumbnail/roof_gutter_thumb.jpg",
-          images: [
-            { src: "/images/roof_gutters1.jpg", alt: "Roof & Gutter 1" },
-            { src: "/images/roof_gutters2.jpg", alt: "Roof & Gutter 2" },
-            { src: "/images/roof_gutters3.jpg", alt: "Roof & Gutter 3" },
-          ],
-        },
-      ],
-    };
+      activeTab: 'All',
+      showModal: false,
+      selectedImage: null,
+      tabs: ['All', 'Fence Work', 'Landscaping Projects', 'Lawn Maintenance', 'Raised Beds', 'Roof Gutters', 'Sodding'],
+      imageData: {
+        'Fence Work': Array.from({ length: 7 }, (_, i) => `/images/fence_work/fence${i + 1}.jpg`),
+        'Landscaping Projects': Array.from({ length: 6 }, (_, i) => `/images/landscaping_projects/landscaping${i + 1}.jpg`),
+        'Lawn Maintenance': Array.from({ length: 6 }, (_, i) => `/images/lawn_maintenance/lawn${i + 1}.jpg`),
+        'Raised Beds': Array.from({ length: 7 }, (_, i) => `/images/raised_beds/raised_bed${i + 1}.jpg`),
+        'Roof Gutters': Array.from({ length: 3 }, (_, i) => `/images/roof_gutters/roof_gutters${i + 1}.jpg`),
+        'Sodding': [`/images/sodd/Sodding.jpg`]
+      }
+    }
   },
+
+  computed: {
+    filteredImages() {
+      if (this.activeTab === 'All') {
+      // Get all images and shuffle them
+      const allImages = Object.values(this.imageData).flat()
+      return this.shuffleArray([...allImages])
+    }
+    return this.imageData[this.activeTab] || []
+  }
+},
+
   methods: {
-    openCarousel(categoryIndex) {
-      this.currentCategoryIndex = categoryIndex;
-      this.showCarousel = true;
-      this.currentIndex = 0; // Reset slide index when opening a new carousel
+    setActiveTab(tab) {
+      this.activeTab = tab
     },
-    closeCarousel() {
-      this.showCarousel = false;
+
+    openModal(image) {
+      this.selectedImage = image
+      this.showModal = true
     },
-    nextSlide() {
-      const images = this.categories[this.currentCategoryIndex].images;
-      this.currentIndex = (this.currentIndex + 1) % images.length;
+
+    closeModal() {
+      this.showModal = false
+      this.selectedImage = null
     },
-    prevSlide() {
-      const images = this.categories[this.currentCategoryIndex].images;
-      this.currentIndex = (this.currentIndex - 1 + images.length) % images.length;
+
+    getImageAlt(imagePath) {
+      return imagePath.split('/').pop().split('.')[0]
     },
-    goToSlide(index) {
-      this.currentIndex = index;
-    },
-  },
-};
+
+    shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array
+}
+  }
+}
 </script>
 
 <style scoped>
-/* General Layout and Styling */
-.page-wrapper {
-  display: flex;
-  flex-direction: column;
+.gallery-page {
+  padding: 2rem;
+  background-color: #f4f1ed;
   min-height: 100vh;
 }
 
-.gallery-wrapper {
-  flex: 1;
-  padding: 3rem 1rem;
+.gallery-title {
   text-align: center;
-  background-color: #1e1e1e;
-  animation: fadeIn 1s ease-in-out;
+  color: #333;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.gallery-heading {
-  font-size: 3rem;
-  font-weight: bold;
-  margin-bottom: 3rem;
-  color: #f5f5f5;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  border-bottom: 3px solid #28a745;
-  display: inline-block;
-  padding-bottom: 10px;
-}
-
-/* Categories Layout */
-.categories {
+.category-tabs {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  gap: 40px;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
 }
 
-.category-box {
-  position: relative;
-  width: 320px;
-  height: 220px;
-  border-radius: 20px;
-  overflow: hidden;
+.tab {
+  padding: 0.5rem 1rem;
   cursor: pointer;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  position: relative;
+  color: #555;
+  transition: color 0.3s;
 }
 
-.category-box:hover {
-  transform: scale(1.08);
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5);
+.tab::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #333;
+  transform: scaleX(0);
+  transition: transform 0.3s;
 }
 
-.category-thumbnail {
+.tab:hover::after {
+  transform: scaleX(0.5);
+}
+
+.tab.active {
+  color: #000;
+}
+
+.tab.active::after {
+  transform: scaleX(1);
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+.gallery-item {
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.gallery-item:hover {
+  transform: translateY(-5px);
+}
+
+.gallery-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.3s ease;
 }
 
-.category-label {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 10px;
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
-  font-weight: bold;
-  font-size: 1.4rem;
-  text-transform: uppercase;
-  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+.gallery-item:hover img {
+  transform: scale(1.05);
 }
 
-/* Carousel Modal */
-.carousel-modal {
+/* Modal styles */
+.modal {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(0, 0, 0, 0.85);
   z-index: 1000;
 }
 
-.carousel {
+.modal-content {
   position: relative;
-  width: 90%;
-  max-width: 900px;
-  max-height: 80vh;
-  background: #2c2c2c;
-  padding: 20px;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
+  max-width: 90vw;
+  max-height: 90vh;
 }
 
-.carousel img {
-  width: auto;
-  height: auto;
+.modal-content img {
   max-width: 100%;
-  max-height: 70vh;
+  max-height: 90vh;
   object-fit: contain;
-  border-radius: 15px;
-  margin: auto;
+  border-radius: 4px;
 }
 
-.close-btn {
+.modal-close {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background: #f44336;
-  color: white;
+  top: -40px;
+  right: -40px;
+  background: none;
   border: none;
-  font-size: 1.5rem;
+  color: white;
+  font-size: 2rem;
   cursor: pointer;
-  padding: 12px;
-  border-radius: 50%;
-  transition: background-color 0.3s ease;
+  padding: 1rem;
 }
 
-.close-btn:hover {
-  background-color: #d32f2f;
-}
-
-/* Carousel Navigation */
-.carousel-item {
-  display: none;
+/* Transitions */
+.gallery-fade-enter-active,
+.gallery-fade-leave-active {
   transition: opacity 0.5s ease;
 }
 
-.carousel-item.active {
-  display: block;
+.gallery-fade-enter-from,
+.gallery-fade-leave-to {
+  opacity: 0;
 }
 
-.carousel-controls {
-  position: absolute;
-  top: 50%;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  transform: translateY(-50%);
-}
-
-.prev-btn,
-.next-btn {
-  background: #333;
-  color: white;
-  font-size: 1.8rem;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.prev-btn:hover,
-.next-btn:hover {
-  background-color: #555;
-}
-
-/* Carousel Indicators */
-.carousel-indicators {
-  position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 15px;
-}
-
-.carousel-indicators span {
-  width: 12px;
-  height: 12px;
-  background-color: #666;
-  border-radius: 50%;
-  display: inline-block;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.carousel-indicators span.active {
-  background-color: #28a745;
-}
-
-.carousel-indicators span:hover {
-  background-color: #a0a0a0;
-}
-
-/* Responsive adjustments */
 @media (max-width: 768px) {
-  .gallery-heading {
+  .gallery-title {
     font-size: 2rem;
   }
 
-  .category-box {
-    width: 100%;
-    max-width: 280px;
+  .tab {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
   }
 
-  .carousel {
-    width: 95%;
+  .gallery-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+    padding: 0.5rem;
   }
 
-  .prev-btn,
-  .next-btn {
-    font-size: 1.5rem;
-    padding: 8px 12px;
-  }
-}
-
-@media (max-width: 480px) {
-  .gallery-heading {
-    font-size: 1.5rem;
-  }
-
-  .prev-btn,
-  .next-btn {
-    font-size: 1.2rem;
-    padding: 6px 8px;
+  .modal-close {
+    top: 10px;
+    right: 10px;
   }
 }
 </style>
