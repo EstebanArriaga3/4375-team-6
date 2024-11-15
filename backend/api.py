@@ -166,26 +166,42 @@ def aCustomers():
     return jsonify({'message': 'Customer added successfully!'})
 
 @app.route('/api/Reviews/add', methods=['POST'])
-@admin_required
-def add_review():
-    data = request.get_json()
-    query = """
-    INSERT INTO Reviews (ServiceID, Rating, Comment, ReviewDate, CustomerName)
-    VALUES (%s, %s, %s, %s, %s)
-    """
-    execute_query(conn, query, (data['ServiceID'], data['Rating'], data['Comment'], data['ReviewDate'], data['CustomerName']))
-    return jsonify({'message': 'Review added successfully!'}), 201
+def aReviews():
+    request_data = request.get_json()
+    addServiceID = request_data.get('ServiceID', 1)  # Default to 1 if not provided
+    addRating = request_data['Rating']
+    addComment = request_data['Comment']
+    addReviewDate = request_data['ReviewDate']
+    addCustomerName = request_data['name']  # Capture the customer name from the request
+
+    cursor.execute(
+        "INSERT INTO TexasLawns.Reviews (ServiceID, Rating, Comment, ReviewDate, CustomerName) VALUES (%s, %s, %s, %s, %s)",
+        (addServiceID, addRating, addComment, addReviewDate, addCustomerName)
+    )
+    conn.commit()
+    return 'Review added successfully!'
 
 @app.route('/api/Quotes/add', methods=['POST'])
-@admin_required
 def add_quote():
-    data = request.get_json()
-    query = """
-    INSERT INTO Quotes (email_address, description, fence_gates_service, raised_beds_service, landscaping_service, gutters_roofing_service)
-    VALUES (%s, %s, %s, %s, %s, %s)
-    """
-    execute_query(conn, query, (data['email_address'], data['description'], data['fence_gates_service'], data['raised_beds_service'], data['landscaping_service'], data['gutters_roofing_service']))
-    return jsonify({'message': 'Quote added successfully!'}), 201
+    request_data = request.get_json()
+    
+    email_address = request_data['email_address']
+    description = request_data['description']
+    fence_gates_service = request_data['fence_gates_service']
+    raised_beds_service = request_data['raised_beds_service']
+    landscaping_service = request_data['landscaping_service']
+    gutters_roofing_service = request_data['gutters_roofing_service']
+
+    cursor.execute(
+        """
+        INSERT INTO TexasLawns.Quotes (email_address, description, fence_gates_service, raised_beds_service, landscaping_service, gutters_roofing_service)
+        VALUES (%s, %s, %s, %s, %s, %s)
+        """,
+        (email_address, description, fence_gates_service, raised_beds_service, landscaping_service, gutters_roofing_service)
+    )
+    conn.commit()
+    
+    return 'Quote added successfully!'
 
 @app.route('/api/Services/add', methods=['POST'])
 @admin_required
@@ -242,19 +258,52 @@ def update_services():
 # Delete (DELETE) routes with admin_required decorator
 @app.route('/api/Reviews/delete', methods=['DELETE'])
 @admin_required
-def delete_review():
-    data = request.get_json()
-    query = "DELETE FROM Reviews WHERE ReviewID = %s"
-    execute_query(conn, query, (data['ReviewID'],))
-    return jsonify({'message': 'Review deleted successfully!'})
+def dReviews():
+    request_data = request.get_json()
+
+    # Validate the input
+    if 'review_id' not in request_data:
+        return {'message': 'Review ID is required.'}, 400
+
+    review_id = request_data['review_id']
+
+    try:
+        # Check if the review exists
+        cursor.execute("SELECT ReviewID FROM TexasLawns.Reviews WHERE ReviewID = %s", [review_id])
+        review = cursor.fetchone()
+
+        if review:
+            cursor.execute("DELETE FROM TexasLawns.Reviews WHERE ReviewID = %s", [review_id])
+            conn.commit()
+            return {'message': 'Review deleted successfully!'}, 200
+        else:
+            return {'message': 'Review not found.'}, 404
+    except Exception as e:
+        print("Error during deletion:", str(e))
+        return {'message': 'An error occurred while deleting the review.'}, 500
 
 @app.route('/api/Quotes/delete', methods=['DELETE'])
 @admin_required
-def delete_quote():
-    data = request.get_json()
-    query = "DELETE FROM Quotes WHERE quote_id = %s"
-    execute_query(conn, query, (data['quote_id'],))
-    return jsonify({'message': 'Quote deleted successfully!'})
+def dQuotes():
+    try:
+        request_data = request.get_json()
+        if 'quote_id' not in request_data:
+            return jsonify({'error': 'quote_id is required'}), 400
+
+        deleteQuoteID = request_data['quote_id']
+
+        cursor.execute("DELETE FROM TexasLawns.Quotes WHERE quote_id = %s", [deleteQuoteID])
+        affected_rows = cursor.rowcount
+        conn.commit()
+
+        if affected_rows == 0:
+            return jsonify({'message': 'No quote found with the given ID'}), 404
+        
+        return jsonify({'message': 'Quote deleted successfully'}), 200
+
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/AppointmentDetails/delete', methods=['DELETE'])
 @admin_required
