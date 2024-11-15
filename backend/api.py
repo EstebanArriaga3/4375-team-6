@@ -25,15 +25,16 @@ cursor = conn.cursor(dictionary=True)
 def authenticate(email, password):
     query = "SELECT PasswordHash, Role FROM OwnerLogin WHERE Email = %s"
     user = execute_read_query(conn, query, (email,))
+    print(f"Provided password: {password}")
     print("User fetched:", user)  # Debugging line to see what user data is fetched
 
     if not user:
         return None
 
-    stored_hash = user[0]['PasswordHash']
+    stored_hash = user[0]['PasswordHash']   
     print("Stored Hash:", stored_hash)  # See the hash or password stored
-
-    if password == "admin":
+    print(f"Provided password: {password}")
+    if password == stored_hash:
         return {'role': user[0]['Role']}
 
 
@@ -62,8 +63,11 @@ def admin_required(f):
 @cross_origin(origin='http://localhost:5173', supports_credentials=True)
 def login():
     data = request.get_json()
+    print(f"Raw input data: {data}")
     email = data.get('username')
     password = data.get('password')
+    print(f"Extracted email: {email}")
+    print(f"Extracted password: {password}")
     
     user = authenticate(email, password)
     if user:

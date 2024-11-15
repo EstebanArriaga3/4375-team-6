@@ -3,24 +3,24 @@
     <!--Header-->
     <h1>Welcome</h1>
     <!--Form-->
-    <form @submit.prevent="login">
+    <form @submit.prevent="login" autocomplete="off">
       <div class="flex justify-center mt-10">
         <label>
           <span class="text-gray-700">Username</span>
           <span style="color: #ff0000">*</span>
-          <input type="text" v-model="username" />
+          <input type="text" v-model="username" autocomplete="off"/>
         </label>
       </div>
       <div class="flex justify-center mt-10">
         <label>
           <span class="text-gray-700">Password</span>
           <span style="color: #ff0000">*</span>
-          <input type="password" v-model="password" />
+          <input type="password" v-model="password" autocomplete="off"/>
         </label>
       </div>
       <!--Login button-->
       <div class="flex justify-center mt-10">
-        <button type="submit">Login</button>
+        <button type="submit" :disabled="isSubmitting">Login</button>
       </div>
       <!-- Display error message -->
       <p v-if="errorMessage" style="color: red;">{{ errorMessage }}</p>
@@ -38,26 +38,50 @@ const password = ref('');
 const errorMessage = ref('');
 
 const store = useLoggedInUserStore();
+const isSubmitting = ref(false);
 
 const login = async () => {
-  try {
-    const response = await axios.post('http://localhost:5000/api/login', 
-    {
-      username: username.value,
-      password: password.value,
-    },
-    { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
-  );
+  if (isSubmitting.value) return;  // Prevent multiple submissions
+  isSubmitting.value = true;  // Disable the submit button
+  const payload = {
+    username: username.value,
+    password: password.value,
+  };
+  console.log(axios);
 
-    if (response.data.success) {
-      store.login(username.value, response.data.role);
-      errorMessage.value = '';  // Clear any error messages
-    } else {
-      errorMessage.value = response.data.message || 'Login failed.';
-    }
+  console.log("Payload before sending:", payload);
+  console.log("Username input:", username.value);  // This should print the value bound to the username field
+  console.log("Password input:", password.value);  // This should print the value bound to the password field
+//   axios.interceptors.request.use(request => {
+//   console.log("Request data:", request.data);  // Log the request data here
+//   return request;
+// }, error => {
+//   return Promise.reject(error);
+// });
+console.log('Login method called');
+  try {
+    // console.log("Payload before sending:", payload);
+    // const response = await axios.post('http://localhost:5000/api/login', 
+    // // {
+    // //   username: username.value,
+    // //   password: password.value,
+    // // },
+    // payload,
+    // { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
+    // );
+    await store.login(username.value, password.value);
+    // if (response.data.success) {
+    //   store.login(username.value, response.data.role);
+    errorMessage.value = '';  // Clear any error messages
+    // } else {
+    //   errorMessage.value = response.data.message || 'Login failed.';
+    // }
   } catch (error) {
     errorMessage.value = 'An error occurred during login.';
     console.error(error);
+  }
+  finally {
+    isSubmitting.value = false;
   }
 };
 </script>

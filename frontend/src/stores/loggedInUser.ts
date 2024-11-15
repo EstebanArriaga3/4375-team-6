@@ -5,6 +5,11 @@ import router from '../router';
 
 axios.defaults.withCredentials = true;
 
+axios.interceptors.request.use(request => {
+  console.log("Interceptor request data:", request.data);  // Check the data here
+  return request;
+});
+
 export const useLoggedInUserStore = defineStore({
   id: 'loggedInUser',
   state: () => ({
@@ -15,6 +20,7 @@ export const useLoggedInUserStore = defineStore({
   actions: {
     async login(username: string, password: string) {
       try {
+        console.log("Login attempt with", { username, password });
         const response = await axios.post("http://localhost:5000/api/login", {
           username,
           password,
