@@ -21,7 +21,7 @@ import { RouterLink } from 'vue-router';
       <h2>Our Services</h2>
       <div class="grid-3">
         <div class="grid-item">
-          <h3>Lawn Care</h3>
+          <h3>Lawn Maintenance</h3>
           <p>Keep your lawn lush and healthy year-round.</p>
         </div>
         <div class="grid-item">
@@ -60,38 +60,37 @@ import { RouterLink } from 'vue-router';
 <style scoped>
 /* Home View Styles */
 .home {
-  color: #e0e0e0; /* Text color for dark theme */
-  background: #121212; /* Dark background */
+  color: var(--color-text-soft); /* Aligned with updated text color */
+  background: var(--color-background); /* Updated background color */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 3rem 1.5rem;
-  font-family: 'Poppins', sans-serif; /* Modern, clean font */
+  font-family: 'Open Sans', sans-serif; /* Clean and modern font */
 }
 
 /* Hero Section */
 .hero {
   text-align: center;
   margin-bottom: 3rem;
-  background: linear-gradient(to right, #1c1c1c, #2c2c2c);
+  background: var(--color-background-soft); /* Subtle background */
   padding: 2rem;
   border-radius: 15px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Softer shadow */
 }
 
 .hero-title {
   font-size: 3rem;
   margin-bottom: 0.5rem;
-  color: #4caf50; /* Primary color for dark theme */
+  color: var(--color-primary); /* Updated primary color */
   animation: fadeIn 1.2s ease-in-out;
 }
 
 .hero-subtitle {
   font-size: 1.25rem;
   margin-bottom: 2rem;
-  color: #b0b0b0;
-  opacity: 0.85;
+  color: var(--color-text); /* Ensuring readability */
   animation: fadeIn 1.4s ease-in-out;
 }
 
@@ -111,22 +110,22 @@ import { RouterLink } from 'vue-router';
 }
 
 .primary {
-  background-color: #4caf50; /* Bright primary button for dark theme */
+  background-color: var(--color-primary); /* Primary button */
   color: white;
 }
 
 .primary:hover {
-  background-color: #81c784; /* Lighter hover effect */
+  background-color: var(--color-primary-light); /* Hover effect */
 }
 
 .secondary {
   background-color: transparent;
-  border: 2px solid #4caf50;
-  color: #4caf50;
+  border: 2px solid var(--color-secondary);
+  color: var(--color-secondary);
 }
 
 .secondary:hover {
-  background-color: #4caf50;
+  background-color: var(--color-secondary);
   color: white;
 }
 
@@ -139,7 +138,7 @@ import { RouterLink } from 'vue-router';
 .services h2 {
   font-size: 2rem;
   margin-bottom: 2rem;
-  color: #e0e0e0; /* Text color for headings */
+  color: var(--color-text); /* Text color for headings */
 }
 
 .grid-3 {
@@ -149,25 +148,24 @@ import { RouterLink } from 'vue-router';
 }
 
 .grid-item {
-  background-color: #1c1c1c; /* Dark card background */
+  background-color: var(--color-background-soft); /* Card background */
   padding: 1.5rem;
   border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Softer shadow */
   text-align: center;
 }
 
 .grid-item:hover {
   transform: scale(1.05);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5); /* More dramatic shadow on hover */
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3); /* Subtle hover effect */
 }
 
 .grid-item h3 {
-  color: #81c784; /* Accent color for headings */
+  color: var(--color-secondary); /* Accent color for headings */
 }
 
 .grid-item p {
-  color: #b0b0b0; /* Lighter text for descriptions */
+  color: var(--color-text); /* Consistent text color */
 }
 
 /* Testimonials Section */
@@ -179,17 +177,17 @@ import { RouterLink } from 'vue-router';
 .testimonial {
   max-width: 600px;
   margin: 0 auto;
-  background-color: #1c1c1c; /* Dark background for testimonials */
+  background-color: var(--color-background-soft); /* Background for testimonials */
   padding: 1.5rem;
   border-radius: 10px;
   font-style: italic;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subdued shadow */
 }
 
 .testimonial h4 {
   margin-top: 1rem;
   font-weight: bold;
-  color: #4caf50; /* Primary color for emphasis */
+  color: var(--color-secondary); /* Highlight color */
 }
 
 /* Animations */

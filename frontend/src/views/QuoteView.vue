@@ -30,13 +30,7 @@
 
       <div class="description-section">
         <label for="description">Project Description:</label>
-        <textarea
-          id="description"
-          rows="4"
-          v-model="description"
-          placeholder="Describe the size, location, and specifics of your project..."
-        ></textarea>
-
+        <textarea id="description" rows="4" v-model="description" placeholder="Describe the size, location, and specifics of your project..."></textarea>
         <label for="email">Your Email Address:</label>
         <input type="email" id="email" v-model="email" placeholder="Enter your email" />
       </div>
@@ -99,16 +93,10 @@ function resetForm() {
   max-width: 900px;
   margin: 3rem auto;
   padding: 2.5rem;
-  background-color: #1f1f1f; /* Dark background */
+  background-color: var(--color-background-soft); /* Soft background for aesthetic appeal */
   border-radius: 16px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
   animation: fadeIn 0.8s ease-in-out;
-}
-
-/* Animation for smooth fade-in effect */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Header */
@@ -119,18 +107,18 @@ function resetForm() {
 
 .quote-header h1 {
   font-size: 3rem;
-  color: #ffffff;
+  color: var(--color-primary);
   text-transform: uppercase;
   font-weight: bold;
   letter-spacing: 2px;
-  border-bottom: 2px solid #28a745;
+  border-bottom: 2px solid var(--color-primary-light);
   display: inline-block;
   padding-bottom: 10px;
 }
 
 .quote-header p {
   font-size: 1.3rem;
-  color: #d4d4d4;
+  color: var(--color-text-soft);
   margin-top: 1rem;
 }
 
@@ -144,7 +132,7 @@ function resetForm() {
 /* Services Section */
 .services-section h2 {
   font-size: 1.6rem;
-  color: #f0f0f0;
+  color: var(--color-text);
   margin-bottom: 1rem;
   text-transform: uppercase;
 }
@@ -162,19 +150,19 @@ function resetForm() {
 
 .checkbox input {
   margin-right: 0.8rem;
-  accent-color: #28a745;
+  accent-color: var(--color-secondary);
 }
 
 .checkbox label {
-  color: #ffffff;
+  color: var(--color-text);
   font-size: 1.2rem;
 }
 
 /* Description Section */
 .description-section label {
   font-size: 1.2rem;
-  color: #ffffff;
-  display: block;
+  color: var(--color-text);
+  display:block;
   margin-bottom: 0.5rem;
 }
 
@@ -183,23 +171,23 @@ function resetForm() {
   width: 100%;
   padding: 15px;
   margin-bottom: 1.5rem;
-  border: 2px solid #444;
+  border: 2px solid var(--color-primary-light);
   border-radius: 10px;
-  background-color: #2d2d2d;
-  color: #f0f0f0;
+  background-color: var(--color-background);
+  color: var(--color-text);
   font-size: 1.1rem;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .description-section textarea:focus,
 .description-section input:focus {
-  border-color: #28a745;
-  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);
 }
 
 .description-section textarea::placeholder,
 .description-section input::placeholder {
-  color: #888;
+  color: var(--color-text-mute);
   font-size: 1rem;
 }
 
@@ -210,20 +198,20 @@ function resetForm() {
 
 .btn-submit {
   padding: 15px 40px;
-  background-color: #28a745;
-  color: #ffffff;
+  background-color: var(--color-primary);
+  color: var(--color-background);
   font-size: 1.3rem;
   font-weight: 600;
   text-transform: uppercase;
   border: none;
   border-radius: 50px;
-  box-shadow: 0 8px 20px rgba(40, 167, 69, 0.6);
+  box-shadow: 0 8px 20px rgba(var(--color-primary-rgb), 0.6);
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .btn-submit:hover {
-  background-color: #218838;
+  background-color: var(--color-primary-light);
   transform: translateY(-5px);
 }
 

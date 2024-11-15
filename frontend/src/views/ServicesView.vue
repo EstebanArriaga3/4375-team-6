@@ -68,55 +68,58 @@ onMounted(() => {
   fetchServices()
 })
 </script>
-
-<style scoped>
+<style scoped> 
 /* Main Container */
 .services {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 3rem 2rem;
-  background-color: #0d0d0d;
-  color: #f0f0f0;
+  padding: 3rem 1rem;
+  background-color: #f5f5f5; /* Light gray background */
+  color: #333; /* Dark text for better contrast on light background */
   font-family: 'Poppins', sans-serif;
   animation: fadeIn 1s ease-in-out;
 }
 
-/* Fade-in animation for smooth entry */
+/* Smooth Fade-in Animation */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Page Title */
+/* Page Title Styling */
 h1 {
-  font-size: 3rem;
-  margin-bottom: 2.5rem;
-  color: #4caf50;
+  font-size: 2.8rem;
+  color: #004175; /* Navy blue for headings */
+  margin-bottom: 2rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-  border-bottom: 3px solid #4caf50;
-  display: inline-block;
-  padding-bottom: 10px;
+  border-bottom: 4px solid #ff7f50; /* Coral accent under heading */
+  padding-bottom: 0.5rem;
 }
 
 /* Loading and Error States */
 .loading, .error {
   font-size: 1.5rem;
   margin-top: 2rem;
-  color: #81c784;
   text-align: center;
 }
 
 .error {
-  color: #e57373;
+  color: #e57373; /* Red tone for errors */
 }
 
-/* Service Cards Section */
+/* Service Cards Grid Layout */
 .service-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
   width: 100%;
   max-width: 1200px;
@@ -124,88 +127,72 @@ h1 {
 
 /* Individual Service Card */
 .service-card {
-  background-color: #1a1a1a;
-  border-radius: 15px;
+  background-color: #ffffff; /* White background for each card */
+  border-radius: 10px;
   padding: 2rem;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  text-align: center;
-  cursor: pointer;
+  text-align: left; /* Align text to the left for better readability */
 }
 
 .service-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* Service Card Title */
+/* Service Title and Description */
 .service-card h2 {
-  margin-bottom: 1rem;
   font-size: 1.8rem;
-  color: #81c784;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  color: #004175; /* Navy blue for service titles */
+  margin-bottom: 0.8rem;
 }
 
-/* Service Card Description */
 .service-card p {
   font-size: 1.1rem;
-  color: #ccc;
-  line-height: 1.6;
-  margin: 0 auto;
+  color: #555; /* Darker text for descriptions */
 }
 
-/* Price Information */
+/* Price Tag Styling */
 .service-card .price {
-  font-size: 1.2rem;
-  color: #ffd700;
+  font-size: 1.3rem;
+  color: #ff7f50; /* Coral for price highlight */
   font-weight: bold;
 }
 
-/* Footer (Contact Section) */
+/* Footer Styling - Contact Information */
 footer.contact-info {
-  margin-top: 4rem;
+  margin-top: 3rem;
   text-align: center;
-  padding: 2.5rem;
-  background-color: #1a1a1a;
-  border-radius: 15px;
+  padding: 2rem;
+  background-color: #eeeeee; /* Light background for footer */
+  border-radius: 10px;
   width: 100%;
   max-width: 900px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 /* Contact Details */
 .contact-details p {
-  margin: 0.5rem 0;
   font-size: 1.1rem;
-  color: #ccc;
+  color: #666; /* Darker grey for readability */
 }
 
 .contact-details a {
-  color: #58a6ff;
+  color: #004175; /* Navy blue for links */
   text-decoration: none;
 }
 
 .contact-details a:hover {
-  text-decoration: underline;
+  text-decoration: underline; /* Underline on hover for links */
 }
 
-/* Responsive Design */
+/* Responsive Adjustments */
 @media (max-width: 768px) {
   .service-cards {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Single column layout on smaller screens */
   }
-
+  
   h1 {
-    font-size: 2.5rem;
-  }
-
-  .service-card h2 {
-    font-size: 1.6rem;
-  }
-
-  footer.contact-info {
-    padding: 2rem;
+    font-size: 2.5rem; /* Smaller font size for mobile */
   }
 }
 </style>
