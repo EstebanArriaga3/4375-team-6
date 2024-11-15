@@ -43,7 +43,7 @@ export default {
         const response = await axios.get('http://localhost:5000/api/Reviews');
         this.reviews = response.data.map(review => ({
           ...review,
-          CustomerName: review.name || 'Anonymous'
+          CustomerName: review.CustomerName || 'Anonymous'
         }));
       } catch (error) {
         console.error('Error fetching reviews:', error);
