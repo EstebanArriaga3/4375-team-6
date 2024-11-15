@@ -41,7 +41,7 @@ header nav a {
 }
 
 header nav a:hover {
-  color: var(--color-primary);
+  color: var(--color-secondary);
 }
 
 /* Mobile Hamburger Menu */
@@ -78,12 +78,12 @@ footer {
 
 footer a {
   margin: 0 10px;
-  color: var(--color-primary);
+  color: var(--color-secondary);
   transition: color 0.3s ease;
 }
 
 footer a:hover {
-  color: var(--color-primary-light);
+  color: var(--color-secondary-light);
 }
 
 .grid {

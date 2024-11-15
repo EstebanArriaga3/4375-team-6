@@ -1,16 +1,16 @@
 :root {
-  --color-background: #121212; /* Sleek dark background */
-  --color-background-soft: #1e1e1e; /* Dark soft background for contrast */
-  --color-background-mute: #292929; /* Muted background for cards and emphasis */
+  --color-background: #f5f5f5; /* Light gray background */
+  --color-background-soft: #e0e0e0; /* Darker shade for contrast */
+  --color-background-mute: #ccc; /* Muted background for cards and emphasis */
 
-  --color-text: #e6e6e6; /* Light text for contrast against dark background */
-  --color-text-soft: #c0c0c0; /* Slightly muted text color */
-  --color-text-mute: #9e9e9e; /* Even more muted text color */
+  --color-text: #333; /* Nearly black for text */
+  --color-text-soft: #555; /* Dark gray for less emphasis */
+  --color-text-mute: #777; /* Light gray for disabled or unimportant text */
 
-  --color-primary: #4CAF50; /* Vivid green primary color for branding */
-  --color-primary-light: #81C784; /* Lightened primary color for hover states */
-  --color-secondary: #2979ff; /* Bright blue for secondary actions */
-  --color-secondary-light: #5393ff; /* Lighter blue for hover states */
+  --color-primary: #004175; /* Navy blue for a professional, but unique look */
+  --color-primary-light: #5c97bf; /* Light blue for hover states */
+  --color-secondary: #ff7f50; /* Coral for secondary buttons and highlights */
+  --color-secondary-light: #ff9873; /* Light coral for secondary hover states */
 
   --section-gap: 160px;
 }
@@ -30,11 +30,8 @@ body {
   background: var(--color-background);
   transition: color 0.5s, background-color 0.5s;
   line-height: 1.6;
-  font-family: 'Poppins', sans-serif; /* Clean and modern font */
+  font-family: 'Open Sans', sans-serif;
   font-size: 16px;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   display: flex;
   flex-direction: column;
 }
@@ -51,21 +48,13 @@ a:hover {
 
 h1, h2, h3, h4, h5, h6 {
   color: var(--color-text);
-  line-height: 1.2;
+  font-family: 'Montserrat', sans-serif;
   margin-bottom: 0.5em;
 }
 
-h1 {
-  font-size: 2.5rem;
-}
-
-h2 {
-  font-size: 2rem;
-}
-
-h3 {
-  font-size: 1.75rem;
-}
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.75rem; }
 
 p {
   margin-bottom: 1rem;
@@ -78,17 +67,17 @@ img {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-background: #121212;
-    --color-background-soft: #1e1e1e;
-    --color-background-mute: #292929;
+    --color-background: #333;
+    --color-background-soft: #454545;
+    --color-background-mute: #565656;
 
     --color-text: #e6e6e6;
     --color-text-soft: #c0c0c0;
-    --color-text-mute: #9e9e9e;
+    --color-text-mute: #a0a0a0;
 
-    --color-primary: #4CAF50;
-    --color-primary-light: #81C784;
-    --color-secondary: #2979ff;
-    --color-secondary-light: #5393ff;
+    --color-primary: #004175;
+    --color-primary-light: #5c97bf;
+    --color-secondary: #ff7f50;
+    --color-secondary-light: #ff9873;
   }
 }
