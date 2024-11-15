@@ -19,11 +19,6 @@
           </div>
           <p class="review-text">{{ review.Comment }}</p>
   
-          <!-- Admin Controls: Edit and Delete -->
-          <div v-if="isAdmin">
-            <button @click="editReview(review)" class="edit-button">Edit Review</button>
-            <button @click="confirmDeleteReview(review.ReviewID)" class="delete-button">Delete Review</button>
-          </div>
         </div>
       </div>
   
@@ -120,36 +115,7 @@
           alert('Please fill in all fields before submitting.');
         }
       },
-      confirmDeleteReview(reviewId) {
-        if (confirm('Are you sure you want to delete this review?')) {
-          this.deleteReview(reviewId);
-        }
-      },
-      async deleteReview(reviewId) {
-        try {
-          await axios.delete('http://localhost:5000/api/Reviews/delete', { data: { review_id: reviewId } });
-          alert('Review deleted successfully!');
-          this.fetchReviews();
-        } catch (error) {
-          console.error('Error deleting review:', error);
-          alert('Failed to delete the review. Please try again.');
-        }
-      },
-      editReview(review) {
-        this.reviewToEdit = { ...review };
-        this.showEditModal = true;
-      },
-      async updateReview() {
-        try {
-          await axios.put(`http://localhost:5000/api/Reviews/update`, this.reviewToEdit);
-          alert('Review updated successfully!');
-          this.closeEditModal();
-          this.fetchReviews();
-        } catch (error) {
-          console.error('Error updating review:', error);
-          alert('Failed to update the review. Please try again.');
-        }
-      },
+
       closeEditModal() {
         this.showEditModal = false;
         this.reviewToEdit = null;
