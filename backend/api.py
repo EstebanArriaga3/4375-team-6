@@ -32,22 +32,12 @@ def authenticate(email, password):
 
     stored_hash = user[0]['PasswordHash']
     print("Stored Hash:", stored_hash)  # See the hash or password stored
-    
+
     if password == "admin":
         return {'role': user[0]['Role']}
 
-    # Check if the password is hashed or plain
-    # if stored_hash.startswith("$2b$") or stored_hash.startswith("$2a$"):
-    #     if bcrypt.check_password_hash(stored_hash, password):
-    #         print("hash")
-    #         return {'role': user[0]['Role']}
-    # else:
-    #     if stored_hash == password:
-    #         print("plain")
-    #         return {'role': user[0]['Role']}
 
-    return None  # Authentication failed
-  # Authentication failed
+    return None  # Authentication failed Authentication failed
 
 # Decorator for routes that require login
 def login_required(f):
