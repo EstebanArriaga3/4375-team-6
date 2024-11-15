@@ -128,96 +128,119 @@
   </script>
   
   <style scoped>
-  /* Main Container */
-  .reviews-page {
-    padding: 40px 20px;
-    font-family: 'Poppins', sans-serif;
-    background-color: #181818;
-    color: #f0f0f0;
-    text-align: center;
-    animation: fadeIn 1s ease-in-out;
-  }
-  
-  /* Animation for fade-in effect */
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  
-  /* Title */
-  h1 {
-    font-size: 3rem;
-    margin-bottom: 20px;
-    color: #fff;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-weight: 700;
-    border-bottom: 3px solid #444;
-    padding-bottom: 10px;
-  }
-  
-  /* Description */
-  .description {
-    font-size: 1.2rem;
-    color: #bbb;
-    margin-bottom: 50px;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-    line-height: 1.8;
-  }
-  
-  /* Reviews Section */
-  .reviews-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 30px;
-  }
-  
-  .review {
-    background-color: #222;
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    overflow: hidden;
-    text-align: left;
-  }
-  
-  .review:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.9);
-  }
-  
-  .review-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  
-  h2 {
-    font-size: 1.6rem;
-    color: #fff;
-    font-weight: 700;
-  }
-  
-  .rating {
-    font-size: 1.2rem;
-    color: #f39c12;
-    font-weight: bold;
-  }
-  
-  /* Review Text */
-  .review-text {
-    color: #ccc;
-    font-size: 1rem;
-    line-height: 1.6;
-    font-style: italic;
-  }
-  
-  /* Leave a Review Section */
-  .leave-review {
+.reviews-page {
+  padding: 40px 20px;
+  background-color: #f4f1ed;
+  min-height: 100vh;
+  color: #333;
+}
+
+h1 {
+  text-align: center;
+  font-size: 2.8rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+.description {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 3rem;
+  color: #666;
+  line-height: 1.8;
+}
+
+/* Stats Bar */
+.stats-bar {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto 3rem;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-item h3 {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+/* Stars */
+.stars {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.star {
+  color: #ddd;
+  font-size: 1.4rem;
+  cursor: default;
+  transition: color 0.3s ease;
+}
+
+.star.filled {
+  color: #ffd700;
+}
+
+/* Reviews Container */
+.reviews-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.review {
+  background: white;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.review:hover {
+  transform: translateY(-5px);
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.user-info h2 {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.review-date {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.review-text {
+  color: #555;
+  line-height: 1.6;
+  font-size: 1.1rem;
+}
+
+/* Leave a Review Section */
+.leave-review {
     margin-top: 60px;
     padding: 30px;
     background-color: #333;
@@ -269,37 +292,115 @@
   .leave-review button:hover {
     background-color: #218838;
   }
-  
-  /* Delete and Edit Review Button */
-  .review button {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  padding: 2rem;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 500px;
+}
+
+.modal h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+/* Buttons */
+.submit-btn,
+.save-btn {
+  width: 100%;
+  padding: 1rem;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.cancel-btn {
+  width: 100%;
+  padding: 1rem;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.admin-controls {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  border-top: 1px solid #eee;
+  padding-top: 1rem;
+}
+
+.edit-btn,
+.delete-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.edit-btn {
+  background: #007bff;
+  color: white;
+}
+
+.delete-btn {
+  background: #dc3545;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .reviews-container {
+    grid-template-columns: 1fr;
   }
-  
-  .review button:hover {
-    background-color: #c82333;
+
+  .stats-bar {
+    flex-direction: column;
+    gap: 1.5rem;
   }
-  
-  /* Responsive */
-  @media (max-width: 768px) {
-    .leave-review,
-    .description {
-      padding: 20px;
-    }
-  
-    .reviews-container {
-      grid-template-columns: 1fr;
-    }
-  
-    h1 {
-      font-size: 2.5rem;
-    }
+
+  .modal {
+    width: 95%;
+    padding: 1.5rem;
   }
-  </style>
-  
+}
+</style>
