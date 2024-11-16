@@ -25,19 +25,21 @@ cursor = conn.cursor(dictionary=True)
 def authenticate(email, password):
     query = "SELECT PasswordHash, Role FROM OwnerLogin WHERE Email = %s"
     user = execute_read_query(conn, query, (email,))
-    print(f"Provided password: {password}")
-    print("User fetched:", user)  # Debugging line to see what user data is fetched
-
+    # print(f"Provided password: {password}")
+    # print("User fetched:", user)  # Debugging line to see what user data is fetched
     if not user:
         return None
 
     stored_hash = user[0]['PasswordHash']   
-    print("Stored Hash:", stored_hash)  # See the hash or password stored
-    print(f"Provided password: {password}")
-    if password == stored_hash:
+    # print("Stored Hash:", stored_hash)  # See the hash or password stored
+    # print(f"Provided password: {password}")
+    # password_hash = bcrypt_flask.generate_password_hash('testing').decode('utf-8')
+    # print(password_hash)
+    if bcrypt_flask.check_password_hash(stored_hash, password):
         return {'role': user[0]['Role']}
-
-
+    # if password == stored_hash:
+    #     return {'role': user[0]['Role']}
+    # backup just in case
     return None  # Authentication failed Authentication failed
 
 # Decorator for routes that require login
@@ -63,11 +65,11 @@ def admin_required(f):
 @cross_origin(origin='http://localhost:5173', supports_credentials=True)
 def login():
     data = request.get_json()
-    print(f"Raw input data: {data}")
+    # print(f"Raw input data: {data}")
     email = data.get('username')
     password = data.get('password')
-    print(f"Extracted email: {email}")
-    print(f"Extracted password: {password}")
+    # print(f"Extracted email: {email}")
+    # print(f"Extracted password: {password}")
     
     user = authenticate(email, password)
     if user:

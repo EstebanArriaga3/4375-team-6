@@ -49,16 +49,16 @@ const login = async () => {
   };
   console.log(axios);
 
-  console.log("Payload before sending:", payload);
-  console.log("Username input:", username.value);  // This should print the value bound to the username field
-  console.log("Password input:", password.value);  // This should print the value bound to the password field
+  // console.log("Payload before sending:", payload);
+  // console.log("Username input:", username.value);  // This should print the value bound to the username field
+  // console.log("Password input:", password.value);  // This should print the value bound to the password field
 //   axios.interceptors.request.use(request => {
 //   console.log("Request data:", request.data);  // Log the request data here
 //   return request;
 // }, error => {
 //   return Promise.reject(error);
 // });
-console.log('Login method called');
+// console.log('Login method called');
   try {
     // console.log("Payload before sending:", payload);
     // const response = await axios.post('http://localhost:5000/api/login', 
