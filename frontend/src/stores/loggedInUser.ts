@@ -10,12 +10,21 @@ axios.defaults.withCredentials = true;
 //   return request;
 // });
 
+function debounce(func: Function, wait: number) {
+  let timeout: ReturnType<typeof setTimeout> | null = null;
+  return (...args: any[]) => {
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+}
+
 export const useLoggedInUserStore = defineStore({
   id: 'loggedInUser',
   state: () => ({
     name: "" as string,
     role: "" as string,
     isLoggedIn: false as boolean,
+    lastActivity: 0 as number,
   }),
   actions: {
     async login(username: string, password: string) {
@@ -30,16 +39,19 @@ export const useLoggedInUserStore = defineStore({
       );
 
         if (response.data.success) {
+          const now = Date.now();
           this.$patch({
             name: username,
             role: response.data.role,
             isLoggedIn: true,
+            lastActivity: now,
           });
           // Store user data in localStorage for persistence
           localStorage.setItem('user', JSON.stringify({
             name: username,
             role: response.data.role,
             isLoggedIn: true,
+            lastActivity: now,
           }));
           router.push("/"); // Redirect to home page or another protected route
         } else {
@@ -59,6 +71,7 @@ export const useLoggedInUserStore = defineStore({
           name: "",
           role: "",
           isLoggedIn: false,
+          lastActivity: 0,
         });
         
         localStorage.removeItem('user');
@@ -71,14 +84,40 @@ export const useLoggedInUserStore = defineStore({
 
     loadUserSession() {
       const userData = localStorage.getItem('user');
+      const logoutTime = localStorage.getItem('logoutTime');
+      const now = Date.now();
+      if (logoutTime && now - parseInt(logoutTime) > 2 * 60 * 60 * 1000) {
+        // If it's been more than 2 hours since logout, do not restore session
+        localStorage.removeItem('user');
+        return;
+      }
+
       if (userData) {
         const parsedData = JSON.parse(userData);
+        const { lastActivity } = parsedData;
+        if (now - lastActivity > 1 * 60 * 60 * 1000) {
+          // If it's been more than 1 hour since last activity, log out automatically
+          this.logout();
+        }
+        else {
         this.$patch({
           name: parsedData.name,
           role: parsedData.role,
           isLoggedIn: parsedData.isLoggedIn,
-        });
+          lastActivity: parsedData.lastActivity,
+          });
+        }
       }
-    }
+    },
+    updateActivity: debounce(function (this: any) {
+      const now = Date.now();
+      this.lastActivity = now;
+      const userData = localStorage.getItem('user');
+      if (userData) {
+        const parsedData = JSON.parse(userData);
+        parsedData.lastActivity = now;
+        localStorage.setItem('user', JSON.stringify(parsedData));
+      }
+    }, 1000), // 1 second delay between updates, to reduce traffic
   },
 });

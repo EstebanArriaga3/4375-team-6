@@ -10,6 +10,13 @@ const user = useLoggedInUserStore();
 onMounted(() => {
   user.loadUserSession();
   console.log("User session loaded:", user); // Debugging log
+
+  document.addEventListener("mousemove", () => user.updateActivity());
+  document.addEventListener("keydown", () => user.updateActivity());
+
+  setInterval(() => {
+    user.loadUserSession();
+  }, 30000); // Check every 30 seconds
 });
 
 function toggleMenu() {
