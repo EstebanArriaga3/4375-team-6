@@ -66,7 +66,6 @@ function toggleMenu() {
       <div>
         <a href="https://www.facebook.com/profile.php?id=61556578467091&mibextid=LQQJ4d">Facebook</a>
         <a href="https://www.instagram.com/texas_lawns_liberty_gardens?igsh=d3B2Zmk1cmwyODJ6&utm_source=qr">Instagram</a>
-        <a href="#">LinkedIn</a>
       </div>
     </footer>
   </div>
@@ -87,7 +86,7 @@ header {
   align-items: right;
   margin-top: 0px;
   height: 15px;
-  background-color: #272727;
+  background-color: #f6f2f2;
   box-shadow: none;
 }
 

@@ -158,7 +158,7 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   padding: 3rem 2rem;
-  background-color: #0d0d0d;
+  background-color: #f4f0eb;
   color: #f0f0f0;
   font-family: 'Poppins', sans-serif;
   animation: fadeIn 1s ease-in-out;
@@ -168,10 +168,10 @@ onMounted(() => {
 h1 {
   font-size: 3rem;
   margin-bottom: 2.5rem;
-  color: #4caf50;
+  color: #ee6c4d;
   text-transform: uppercase;
   letter-spacing: 1px;
-  border-bottom: 3px solid #4caf50;
+  border-bottom: 3px solid #6c8ea4;
   display: inline-block;
   padding-bottom: 10px;
 }
@@ -192,7 +192,7 @@ h1 {
 .new-service-form {
   margin-bottom: 2rem;
   padding: 1rem;
-  background-color: #1a1a1a;
+  background-color: #dcd0c0;
   border-radius: 15px;
   width: 100%;
   max-width: 600px;
@@ -207,8 +207,8 @@ h1 {
   margin: 0.5rem 0;
   border-radius: 5px;
   border: none;
-  background-color: #333;
-  color: #f0f0f0;
+  background-color: #f7f1f1;
+  color: #090909;
 }
 
 .new-service-form button {
@@ -235,7 +235,7 @@ h1 {
 
 /* Individual Service Card */
 .service-card {
-  background-color: #1a1a1a;
+  background-color: #dcd0c0;
   border-radius: 15px;
   padding: 2rem;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
@@ -254,8 +254,8 @@ h1 {
   margin-bottom: 0.5rem;
   padding: 0.5rem;
   font-size: 1rem;
-  color: #f0f0f0;
-  background-color: #2a2a2a;
+  color: #0a0a0a;
+  background-color: #f5f1ed;
   border: none;
   border-radius: 8px;
 }
@@ -263,8 +263,8 @@ h1 {
 .service-card button {
   margin-top: 1rem;
   padding: 0.5rem 1rem;
-  color: #f0f0f0;
-  background-color: #4caf50;
+  color: #0a0909;
+  background-color: #f4978e;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -279,7 +279,7 @@ footer.contact-info {
   margin-top: 4rem;
   text-align: center;
   padding: 2.5rem;
-  background-color: #1a1a1a;
+  background-color: #dcd0c0;
   border-radius: 15px;
   width: 100%;
   max-width: 900px;
@@ -289,7 +289,7 @@ footer.contact-info {
 .contact-details p {
   margin: 0.5rem 0;
   font-size: 1.1rem;
-  color: #ccc;
+  color: #0e0d0d;
 }
 
 .contact-details a {

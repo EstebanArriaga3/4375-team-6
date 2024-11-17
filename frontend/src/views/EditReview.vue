@@ -79,8 +79,8 @@ export default {
 .reviews-page {
   padding: 40px 20px;
   font-family: 'Poppins', sans-serif;
-  background-color: #181818;
-  color: #f0f0f0;
+  background-color: #f4f0eb;
+  color: #040303;
   text-align: center;
   animation: fadeIn 1s ease-in-out;
 }
@@ -95,7 +95,7 @@ export default {
 h1 {
   font-size: 3rem;
   margin-bottom: 20px;
-  color: #fff;
+  color: #0e0d0d;
   text-transform: uppercase;
   letter-spacing: 2px;
   font-weight: 700;
@@ -106,7 +106,7 @@ h1 {
 /* Description */
 .description {
   font-size: 1.2rem;
-  color: #bbb;
+  color: #030202;
   margin-bottom: 50px;
   max-width: 600px;
   margin-left: auto;
@@ -122,7 +122,7 @@ h1 {
 }
 
 .review {
-  background-color: #222;
+  background-color: #c2b3a3;
   padding: 25px;
   border-radius: 15px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
@@ -145,19 +145,19 @@ h1 {
 
 h2 {
   font-size: 1.6rem;
-  color: #fff;
+  color: #010101;
   font-weight: 700;
 }
 
 .rating {
   font-size: 1.2rem;
-  color: #f39c12;
+  color: #7c623e;
   font-weight: bold;
 }
 
 /* Review Text */
 .review-text {
-  color: #ccc;
+  color: #232222;
   font-size: 1rem;
   line-height: 1.6;
   font-style: italic;

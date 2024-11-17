@@ -130,24 +130,35 @@
   <style scoped>
 .reviews-page {
   padding: 40px 20px;
-  background-color: #f4f1ed;
-  min-height: 100vh;
-  color: #333;
-}
-
-h1 {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f4f0eb;
+  color: #040303;
   text-align: center;
-  font-size: 2.8rem;
-  color: #333;
-  margin-bottom: 1.5rem;
+  animation: fadeIn 1s ease-in-out;
+}
+/* Animation for fade-in effect */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  color: #0e0d0d;
+  text-transform: uppercase;
+  letter-spacing: 2px;
   font-weight: 700;
+  border-bottom: 3px solid #444;
+  padding-bottom: 10px;
 }
 
 .description {
-  text-align: center;
-  max-width: 800px;
-  margin: 0 auto 3rem;
-  color: #666;
+  font-size: 1.2rem;
+  color: #030202;
+  margin-bottom: 50px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
   line-height: 1.8;
 }
 
@@ -182,7 +193,11 @@ h1 {
   justify-content: center;
   margin-bottom: 0.5rem;
 }
-
+.rating {
+  font-size: 1.2rem;
+  color: #7c623e;
+  font-weight: bold;
+}
 .star {
   color: #ddd;
   font-size: 1.4rem;
@@ -205,45 +220,52 @@ h1 {
 }
 
 .review {
-  background: white;
-  padding: 2rem;
+  background-color: #c2b3a3;
+  padding: 25px;
   border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  text-align: left;
 }
 
 .review:hover {
-  transform: translateY(-5px);
+  transform: translateY(-10px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.9);
 }
 
 .review-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1.5rem;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
-.user-info h2 {
-  font-size: 1.4rem;
-  margin-bottom: 0.5rem;
+h2 {
+  font-size: 1.6rem;
+  color: #010101;
+  font-weight: 700;
 }
 
-.review-date {
-  color: #888;
-  font-size: 0.9rem;
+.rating {
+  font-size: 1.2rem;
+  color: #7c623e;
+  font-weight: bold;
 }
 
+/* Review Text */
 .review-text {
-  color: #555;
+  color: #232222;
+  font-size: 1rem;
   line-height: 1.6;
-  font-size: 1.1rem;
+  font-style: italic;
 }
 
 /* Leave a Review Section */
 .leave-review {
     margin-top: 60px;
     padding: 30px;
-    background-color: #333;
+    background-color: #c2b3a3;
     border-radius: 15px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
     max-width: 600px;
@@ -266,8 +288,8 @@ h1 {
     border: 1px solid #555;
     border-radius: 5px;
     font-size: 1rem;
-    background-color: #444;
-    color: #fff;
+    background-color: #F5F5F5;
+    color: #070707;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
   }
   
@@ -280,7 +302,7 @@ h1 {
     display: block;
     width: 100%;
     padding: 15px;
-    background-color: #28a745;
+    background-color: #333333;
     color: white;
     border: none;
     border-radius: 5px;
