@@ -10,7 +10,15 @@
               functional environments. Check out what our customers are saying about our services.
           </p>
       </div>
-
+      <div class="filter-container">
+        <label for="filter-reviews">Sort Reviews:</label>
+        <select id="filter-reviews" v-model="sortOrder" @change="sortReviews">
+          <option value="most-positive">Most Positive</option>
+          <option value="most-negative">Most Negative</option>
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+        </select>
+      </div>
       <!-- Customer Reviews Section -->
       <div class="reviews-container">
           <div class="review" v-for="review in reviews" :key="review.ReviewID">
@@ -34,7 +42,7 @@ export default {
   data() {
     return {
       reviews: [],
-
+      sortOrder: 'most-positive',
     };
   },
   methods: {
@@ -43,10 +51,22 @@ export default {
         const response = await axios.get('http://localhost:5000/api/Reviews');
         this.reviews = response.data.map(review => ({
           ...review,
-          CustomerName: review.CustomerName || 'Anonymous'
+          CustomerName: review.CustomerName || 'Anonymous',
+          ReviewDate: new Date(review.ReviewDate),
         }));
       } catch (error) {
         console.error('Error fetching reviews:', error);
+      }
+    },
+    sortReviews() {
+      if (this.sortOrder === 'most-positive') {
+        this.reviews.sort((a, b) => b.Rating - a.Rating); // Sort by descending Rating
+      } else if (this.sortOrder === 'most-negative') {
+        this.reviews.sort((a, b) => a.Rating - b.Rating); // Sort by ascending Rating
+      } else if (this.sortOrder === 'newest') {
+        this.reviews.sort((a, b) => new Date(b.ReviewDate) - new Date(a.ReviewDate)); // Sort by descending date
+      } else if (this.sortOrder === 'oldest') {
+        this.reviews.sort((a, b) => new Date(a.ReviewDate) - new Date(b.ReviewDate));
       }
     },
     confirmDeleteReview(reviewId) {
@@ -195,4 +215,28 @@ h2 {
       font-size: 2.5rem;
   }
 }
+
+.filter-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.filter-container label {
+  margin-right: 10px;
+  font-size: 1rem;
+  color: #444;
+}
+
+.filter-container select {
+  padding: 8px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #f5f5f5;
+  color: #444;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 </style>
