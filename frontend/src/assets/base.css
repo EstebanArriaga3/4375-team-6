@@ -66,7 +66,7 @@ img {
   height: auto;
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --color-background: #333333;
     --color-background-soft: #454545;
@@ -81,4 +81,4 @@ img {
     --color-secondary: #ee6c4d;
     --color-secondary-light: #f4978e;
   }
-}
+} */
