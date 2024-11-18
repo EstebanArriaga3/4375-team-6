@@ -5,14 +5,9 @@ import router from '../router';
 
 axios.defaults.withCredentials = true;
 
-// axios.interceptors.request.use(request => {
-//   console.log("Interceptor request data:", request.data);  // Check the data here
-//   return request;
-// });
-
-function debounce(func: Function, wait: number) {
+function debounce<T extends (...args: any[]) => void>(func: T, wait: number): (...args: Parameters<T>) => void {
   let timeout: ReturnType<typeof setTimeout> | null = null;
-  return function (this: any, ...args: any[]) {
+  return function (this: ThisParameterType<T>, ...args: Parameters<T>) {
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(() => func.apply(this, args), wait);
   };
@@ -29,14 +24,11 @@ export const useLoggedInUserStore = defineStore({
   actions: {
     async login(username: string, password: string) {
       try {
-        const response = await axios.post("http://localhost:5000/api/login", {
-          username,
-          password,
-        },
-        {
-          withCredentials: true
-        }
-      );
+        const response = await axios.post(
+          "http://localhost:5000/api/login",
+          { username, password },
+          { withCredentials: true }
+        );
 
         if (response.data.success) {
           const now = Date.now();
@@ -47,12 +39,15 @@ export const useLoggedInUserStore = defineStore({
             lastActivity: now,
           });
           // Store user data in localStorage for persistence
-          localStorage.setItem('user', JSON.stringify({
-            name: username,
-            role: response.data.role,
-            isLoggedIn: true,
-            lastActivity: now,
-          }));
+          localStorage.setItem(
+            'user',
+            JSON.stringify({
+              name: username,
+              role: response.data.role,
+              isLoggedIn: true,
+              lastActivity: now,
+            })
+          );
           router.push("/"); // Redirect to home page or another protected route
         } else {
           throw new Error(response.data.message || "Invalid credentials");
@@ -73,9 +68,8 @@ export const useLoggedInUserStore = defineStore({
           isLoggedIn: false,
           lastActivity: 0,
         });
-        
+
         localStorage.removeItem('user');
-        
         router.push("/"); // Redirect to the home page or login page
       } catch (error) {
         console.error("Logout error:", error);
@@ -86,6 +80,7 @@ export const useLoggedInUserStore = defineStore({
       const userData = localStorage.getItem('user');
       const logoutTime = localStorage.getItem('logoutTime');
       const now = Date.now();
+
       if (logoutTime && now - parseInt(logoutTime) > 2 * 60 * 60 * 1000) {
         // If it's been more than 2 hours since logout, do not restore session
         localStorage.removeItem('user');
@@ -95,30 +90,31 @@ export const useLoggedInUserStore = defineStore({
       if (userData) {
         const parsedData = JSON.parse(userData);
         const { lastActivity } = parsedData;
+
         if (now - lastActivity > 1 * 60 * 60 * 1000) {
           // If it's been more than 1 hour since last activity, log out automatically
           this.logout();
-        }
-        else {
-        this.$patch({
-          name: parsedData.name,
-          role: parsedData.role,
-          isLoggedIn: parsedData.isLoggedIn,
-          lastActivity: parsedData.lastActivity,
+        } else {
+          this.$patch({
+            name: parsedData.name,
+            role: parsedData.role,
+            isLoggedIn: parsedData.isLoggedIn,
+            lastActivity: parsedData.lastActivity,
           });
         }
       }
     },
-    updateActivity: debounce(function () {
+
+    updateActivity: debounce(function (this: { lastActivity: number }) {
       const now = Date.now();
-      this.lastActivity = now; // this red squiggle isnt a problem, ignore it for now
-      // console was showing errors, but now it isn't, so this works
+      this.lastActivity = now;
+
       const userData = localStorage.getItem('user');
       if (userData) {
         const parsedData = JSON.parse(userData);
         parsedData.lastActivity = now;
         localStorage.setItem('user', JSON.stringify(parsedData));
       }
-    }, 1000), // 1 second delay between updates, to reduce traffic
+    }, 1000), // 1-second delay between updates to reduce traffic
   },
 });

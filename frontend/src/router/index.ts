@@ -70,21 +70,26 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const store = useLoggedInUserStore(); // Access the user store
 
-  // Check if the route requires authentication
   if (to.meta.requiresAuth && !store.isLoggedIn) {
-    // Redirect to login page if not authenticated and trying to access a protected route
+    // Redirect to login page if not authenticated
     next({
       path: '/login',
       query: { redirect: to.fullPath },
     });
   } else if (to.meta.role && store.role !== to.meta.role) {
-    // Check if the user has the required role for the route
-    // Redirect to the home page if the user does not have the appropriate role
+    // Check if user has the required role
     alert("You don't have access to this page.");
     next('/');
   } else {
-    // Allow access to the route
-    next();
+    next(); // Allow access to the route
+  }
+});
+
+// Restore session on refresh
+router.afterEach(() => {
+  const store = useLoggedInUserStore();
+  if (!store.isLoggedIn) {
+    store.loadUserSession();
   }
 });
 
