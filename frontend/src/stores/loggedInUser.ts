@@ -12,9 +12,9 @@ axios.defaults.withCredentials = true;
 
 function debounce(func: Function, wait: number) {
   let timeout: ReturnType<typeof setTimeout> | null = null;
-  return (...args: any[]) => {
+  return function (this: any, ...args: any[]) {
     if (timeout) clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
+    timeout = setTimeout(() => func.apply(this, args), wait);
   };
 }
 
@@ -109,9 +109,10 @@ export const useLoggedInUserStore = defineStore({
         }
       }
     },
-    updateActivity: debounce(function (this: any) {
+    updateActivity: debounce(function () {
       const now = Date.now();
-      this.lastActivity = now;
+      this.lastActivity = now; // this red squiggle isnt a problem, ignore it for now
+      // console was showing errors, but now it isn't, so this works
       const userData = localStorage.getItem('user');
       if (userData) {
         const parsedData = JSON.parse(userData);
