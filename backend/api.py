@@ -6,6 +6,9 @@ import Credentials
 from SQL import create_connection, execute_read_query, execute_query
 from flask_bcrypt import Bcrypt
 import bcrypt
+from backend.SQL import create_connection, execute_read_query, execute_query
+from backend.Credentials import Creds
+
 
 # Initialize Flask app
 app = flask.Flask(__name__)
