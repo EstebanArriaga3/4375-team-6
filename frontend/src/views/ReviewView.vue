@@ -76,7 +76,7 @@
     data() {
       return {
         reviews: [],
-        sortOrder: 'most-positive',
+        sortOrder: '',
         showEditModal: false,
         reviewToEdit: null,
         newReview: {
