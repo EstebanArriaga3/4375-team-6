@@ -42,7 +42,7 @@ export default {
   data() {
     return {
       reviews: [],
-      sortOrder: 'most-positive',
+      sortOrder: '',
     };
   },
   methods: {
